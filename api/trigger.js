@@ -23,7 +23,12 @@ const ALLOWED_EVENTS = new Set([
   'class-started',
   'image-changed',
   'class-ended',
-  'class-state',   // heartbeat for late-joining students
+  'class-state',       // heartbeat for late-joining students
+  'mcq-started',       // mentor starts the MCQ session
+  'mcq-question',      // mentor pushes a question to students
+  'mcq-answer',        // student submits an answer (broadcast to mentor)
+  'mcq-reveal',        // mentor reveals the correct answer
+  'mcq-ended',         // mentor ends the MCQ session
 ]);
 
 module.exports = async function handler(req, res) {

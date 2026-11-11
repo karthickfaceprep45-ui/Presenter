@@ -1,36 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Presenter</title>
   <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
-      --blue:        #1a73e8;
-      --blue-dark:   #1558d6;
-      --blue-light:  #e8f0fe;
-      --green:       #34a853;
+      --blue: #1a73e8;
+      --blue-dark: #1558d6;
+      --blue-light: #e8f0fe;
+      --green: #34a853;
       --green-light: #e6f4ea;
-      --red:         #d93025;
-      --red-light:   #fce8e6;
-      --purple:      #7c4dff;
-      --purple-light:#ede7f6;
-      --gray-50:     #f8f9fa;
-      --gray-100:    #f1f3f4;
-      --gray-200:    #e8eaed;
-      --gray-300:    #dadce0;
-      --gray-400:    #bdc1c6;
-      --gray-500:    #9aa0a6;
-      --gray-700:    #5f6368;
-      --gray-900:    #202124;
-      --white:       #ffffff;
-      --shadow-sm:   0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
-      --shadow:      0 4px 6px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.1);
-      --radius:      8px;
-      --radius-lg:   12px;
+      --red: #d93025;
+      --red-light: #fce8e6;
+      --purple: #7c4dff;
+      --purple-light: #ede7f6;
+      --gray-50: #f8f9fa;
+      --gray-100: #f1f3f4;
+      --gray-200: #e8eaed;
+      --gray-300: #dadce0;
+      --gray-400: #bdc1c6;
+      --gray-500: #9aa0a6;
+      --gray-700: #5f6368;
+      --gray-900: #202124;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.1);
+      --radius: 8px;
+      --radius-lg: 12px;
     }
 
     body {
@@ -54,26 +61,74 @@
       top: 0;
       z-index: 100;
     }
-    .header-brand { font-size: 18px; font-weight: 700; color: var(--blue); letter-spacing: -0.3px; }
-    .header-right { display: flex; align-items: center; gap: 10px; }
 
-    .pill { padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; }
-    .pill-blue   { background: var(--blue-light); color: var(--blue); }
-    .pill-gray   { background: var(--gray-100);   color: var(--gray-700); }
-    .pill-purple { background: var(--purple-light); color: var(--purple); }
+    .header-brand {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: -0.3px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .pill-blue {
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+
+    .pill-gray {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+
+    .pill-purple {
+      background: var(--purple-light);
+      color: var(--purple);
+    }
 
     .btn-ghost {
-      background: none; border: none;
-      color: var(--blue); font-size: 14px; cursor: pointer;
-      padding: 6px 12px; border-radius: var(--radius);
+      background: none;
+      border: none;
+      color: var(--blue);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: var(--radius);
       transition: background 0.15s;
     }
-    .btn-ghost:hover { background: var(--blue-light); }
+
+    .btn-ghost:hover {
+      background: var(--blue-light);
+    }
 
     /* ── Screens ─────────────────────────────────────────────── */
-    .main   { min-height: calc(100vh - 60px); display: flex; align-items: flex-start; justify-content: center; padding: 40px 24px; }
-    .screen { display: none; width: 100%; }
-    .screen.active { display: block; }
+    .main {
+      min-height: calc(100vh - 60px);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 24px;
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
+    }
+
+    .screen.active {
+      display: block;
+    }
 
     /* ── Cards ───────────────────────────────────────────────── */
     .card {
@@ -83,22 +138,67 @@
       box-shadow: var(--shadow-sm);
       padding: 32px;
     }
-    .card-sm { max-width: 400px; margin: 0 auto; }
-    .card-md { max-width: 540px; margin: 0 auto; }
-    .card-lg { max-width: 960px; margin: 0 auto; }
-    .card-centered { margin: 0 auto; }
+
+    .card-sm {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .card-md {
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .card-lg {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .card-centered {
+      margin: 0 auto;
+    }
 
     /* ── Typography ──────────────────────────────────────────── */
-    .page-title    { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
-    .page-subtitle { font-size: 14px; color: var(--gray-700); margin-bottom: 28px; }
-    .text-secondary { color: var(--gray-700); }
-    .text-center    { text-align: center; }
-    .text-sm        { font-size: 13px; }
+    .page-title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: var(--gray-700);
+      margin-bottom: 28px;
+    }
+
+    .text-secondary {
+      color: var(--gray-700);
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .text-sm {
+      font-size: 13px;
+    }
 
     /* ── Role Selection ──────────────────────────────────────── */
-    .hero { text-align: center; margin-bottom: 40px; }
-    .hero h1 { font-size: 30px; font-weight: 700; margin-bottom: 10px; }
-    .hero p  { font-size: 15px; color: var(--gray-700); }
+    .hero {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .hero h1 {
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 15px;
+      color: var(--gray-700);
+    }
 
     .role-grid {
       display: grid;
@@ -107,6 +207,7 @@
       max-width: 680px;
       margin: 0 auto;
     }
+
     .role-card {
       background: var(--white);
       border: 2px solid var(--gray-200);
@@ -117,164 +218,521 @@
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
       user-select: none;
     }
-    .role-card:hover  { border-color: var(--blue); box-shadow: var(--shadow); transform: translateY(-2px); }
-    .role-card:active { transform: translateY(0); }
 
-    .role-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
-    .icon-admin   { background: #fce8e6; }
-    .icon-mentor  { background: #e6f4ea; }
-    .icon-student { background: var(--blue-light); }
+    .role-card:hover {
+      border-color: var(--blue);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
 
-    .role-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
-    .role-card p  { font-size: 13px; color: var(--gray-700); }
+    .role-card:active {
+      transform: translateY(0);
+    }
+
+    .role-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+    }
+
+    .icon-admin {
+      background: #fce8e6;
+    }
+
+    .icon-mentor {
+      background: #e6f4ea;
+    }
+
+    .icon-student {
+      background: var(--blue-light);
+    }
+
+    .role-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .role-card p {
+      font-size: 13px;
+      color: var(--gray-700);
+    }
 
     /* ── Buttons ─────────────────────────────────────────────── */
     .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-      padding: 10px 20px; border-radius: var(--radius);
-      font-size: 14px; font-weight: 500; cursor: pointer;
-      transition: background 0.15s, box-shadow 0.15s; border: none; line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, box-shadow 0.15s;
+      border: none;
+      line-height: 1;
     }
-    .btn-primary   { background: var(--blue);     color: var(--white); }
-    .btn-primary:hover   { background: var(--blue-dark); box-shadow: var(--shadow-sm); }
-    .btn-secondary { background: var(--gray-100); color: var(--gray-900); border: 1px solid var(--gray-300); }
-    .btn-secondary:hover { background: var(--gray-200); }
-    .btn-danger    { background: var(--red-light);    color: var(--red); }
-    .btn-danger:hover    { background: #f5c6c2; }
-    .btn-success   { background: var(--green-light);  color: var(--green); }
-    .btn-success:hover   { background: #ceead6; }
-    .btn-purple    { background: var(--purple-light);  color: var(--purple); }
-    .btn-purple:hover    { background: #d1c4e9; }
-    .btn-lg   { padding: 12px 24px; font-size: 15px; }
-    .btn-full { width: 100%; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--blue);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-dark);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary {
+      background: var(--gray-100);
+      color: var(--gray-900);
+      border: 1px solid var(--gray-300);
+    }
+
+    .btn-secondary:hover {
+      background: var(--gray-200);
+    }
+
+    .btn-danger {
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    .btn-danger:hover {
+      background: #f5c6c2;
+    }
+
+    .btn-success {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .btn-success:hover {
+      background: #ceead6;
+    }
+
+    .btn-purple {
+      background: var(--purple-light);
+      color: var(--purple);
+    }
+
+    .btn-purple:hover {
+      background: #d1c4e9;
+    }
+
+    .btn-lg {
+      padding: 12px 24px;
+      font-size: 15px;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
     /* ── Forms ───────────────────────────────────────────────── */
-    .form-group { margin-bottom: 20px; }
-    .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--gray-700); margin-bottom: 6px; }
-    .form-input {
-      width: 100%; padding: 10px 14px;
-      border: 1.5px solid var(--gray-300); border-radius: var(--radius);
-      font-size: 15px; color: var(--gray-900); outline: none;
-      transition: border-color 0.15s; background: var(--white);
+    .form-group {
+      margin-bottom: 20px;
     }
-    .form-input:focus { border-color: var(--blue); }
-    .code-input { font-size: 32px; font-weight: 700; letter-spacing: 10px; text-align: center; }
-    .form-error { font-size: 13px; color: var(--red); margin-top: 6px; }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: 15px;
+      color: var(--gray-900);
+      outline: none;
+      transition: border-color 0.15s;
+      background: var(--white);
+    }
+
+    .form-input:focus {
+      border-color: var(--blue);
+    }
+
+    .code-input {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 10px;
+      text-align: center;
+    }
+
+    .form-error {
+      font-size: 13px;
+      color: var(--red);
+      margin-top: 6px;
+    }
 
     /* ── Room Code Display ───────────────────────────────────── */
     .code-display {
-      background: var(--gray-50); border: 2px dashed var(--gray-300);
-      border-radius: var(--radius-lg); padding: 28px; text-align: center; margin: 24px 0;
+      background: var(--gray-50);
+      border: 2px dashed var(--gray-300);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      text-align: center;
+      margin: 24px 0;
     }
-    .code-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gray-500); margin-bottom: 10px; }
-    .code-value { font-size: 48px; font-weight: 800; letter-spacing: 14px; color: var(--blue); font-variant-numeric: tabular-nums; }
+
+    .code-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--gray-500);
+      margin-bottom: 10px;
+    }
+
+    .code-value {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: 14px;
+      color: var(--blue);
+      font-variant-numeric: tabular-nums;
+    }
 
     /* ── Steps list ──────────────────────────────────────────── */
-    .steps { list-style: none; }
-    .steps li { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--gray-100); font-size: 14px; color: var(--gray-700); }
-    .steps li:last-child { border-bottom: none; }
+    .steps {
+      list-style: none;
+    }
+
+    .steps li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 14px;
+      color: var(--gray-700);
+    }
+
+    .steps li:last-child {
+      border-bottom: none;
+    }
+
     .step-num {
-      width: 22px; height: 22px; background: var(--blue-light); color: var(--blue);
-      border-radius: 50%; font-size: 12px; font-weight: 600;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+      width: 22px;
+      height: 22px;
+      background: var(--blue-light);
+      color: var(--blue);
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
     }
 
     /* ── Image viewer ────────────────────────────────────────── */
     .image-wrap {
-      position: relative; border-radius: var(--radius-lg);
-      overflow: hidden; background: var(--gray-100); aspect-ratio: 16 / 9;
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--gray-100);
+      aspect-ratio: 16 / 9;
     }
-    .class-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .class-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     .img-overlay {
-      position: absolute; bottom: 0; left: 0; right: 0;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
       padding: 14px 18px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.55));
-      display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.55));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .img-counter { color: var(--white); font-size: 13px; font-weight: 500; }
+
+    .img-counter {
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
     .img-placeholder {
-      width: 100%; height: 100%;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      color: var(--gray-500); gap: 10px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-500);
+      gap: 10px;
     }
-    .img-placeholder p { font-size: 14px; }
+
+    .img-placeholder p {
+      font-size: 14px;
+    }
 
     /* ── Controls ────────────────────────────────────────────── */
-    .controls { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; }
-    .nav-btn {
-      padding: 9px 20px; background: var(--white);
-      border: 1.5px solid var(--gray-300); border-radius: var(--radius);
-      font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--gray-900);
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 18px;
     }
-    .nav-btn:hover:not(:disabled) { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
-    .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-    .nav-btn.nav-mcq { border-color: var(--purple); color: var(--purple); }
-    .nav-btn.nav-mcq:hover:not(:disabled) { background: var(--purple-light); }
 
-    .dots { display: flex; gap: 8px; align-items: center; }
-    .dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--gray-300); cursor: pointer; transition: background 0.2s, transform 0.2s;
+    .nav-btn {
+      padding: 9px 20px;
+      background: var(--white);
+      border: 1.5px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: var(--gray-900);
     }
-    .dot.active { background: var(--blue); transform: scale(1.3); }
+
+    .nav-btn:hover:not(:disabled) {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .nav-btn.nav-mcq {
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+
+    .nav-btn.nav-mcq:hover:not(:disabled) {
+      background: var(--purple-light);
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gray-300);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .dot.active {
+      background: var(--blue);
+      transform: scale(1.3);
+    }
 
     /* ── Topbar ──────────────────────────────────────────────── */
-    .class-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 12px; }
-    .class-topbar-left h2 { font-size: 18px; font-weight: 600; margin-bottom: 2px; }
-    .class-topbar-right { display: flex; align-items: center; gap: 10px; }
+    .class-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .class-topbar-left h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .class-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
     /* ── Status badge ────────────────────────────────────────── */
-    .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; }
-    .status-waiting { background: #fff3cd; color: #856404; }
-    .status-live    { background: #d4edda; color: #155724; }
-    .status-mcq     { background: var(--purple-light); color: var(--purple); }
-    .status-dot { width: 7px; height: 7px; border-radius: 50%; }
-    .dot-orange { background: #f9ab00; }
-    .dot-green  { background: var(--green); }
-    .dot-purple { background: var(--purple); }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .status-waiting {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status-live {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-mcq {
+      background: var(--purple-light);
+      color: var(--purple);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .dot-orange {
+      background: #f9ab00;
+    }
+
+    .dot-green {
+      background: var(--green);
+    }
+
+    .dot-purple {
+      background: var(--purple);
+    }
 
     /* ── Waiting screen ──────────────────────────────────────── */
-    .waiting-wrap { text-align: center; padding: 48px 24px; }
-    .spinner {
-      width: 40px; height: 40px;
-      border: 3px solid var(--gray-200); border-top-color: var(--blue);
-      border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 24px;
+    .waiting-wrap {
+      text-align: center;
+      padding: 48px 24px;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .waiting-wrap h2 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--gray-200);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin: 0 auto 24px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .waiting-wrap h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
 
     /* ── Toast ───────────────────────────────────────────────── */
     .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      background: var(--gray-900); color: var(--white);
-      padding: 11px 20px; border-radius: var(--radius);
-      font-size: 14px; font-weight: 500; z-index: 999;
-      opacity: 0; transition: opacity 0.25s; pointer-events: none; white-space: nowrap;
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gray-900);
+      color: var(--white);
+      padding: 11px 20px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.25s;
+      pointer-events: none;
+      white-space: nowrap;
     }
-    .toast.show { opacity: 1; }
+
+    .toast.show {
+      opacity: 1;
+    }
 
     /* ── Divider & spacing ───────────────────────────────────── */
-    hr { border: none; border-top: 1px solid var(--gray-200); margin: 24px 0; }
-    .mt-2 { margin-top: 8px; }
-    .mt-3 { margin-top: 12px; }
-    .mt-4 { margin-top: 16px; }
-    .mt-5 { margin-top: 20px; }
-    .mt-6 { margin-top: 24px; }
-    .mb-1 { margin-bottom: 4px; }
-    .mb-2 { margin-bottom: 8px; }
+    hr {
+      border: none;
+      border-top: 1px solid var(--gray-200);
+      margin: 24px 0;
+    }
+
+    .mt-2 {
+      margin-top: 8px;
+    }
+
+    .mt-3 {
+      margin-top: 12px;
+    }
+
+    .mt-4 {
+      margin-top: 16px;
+    }
+
+    .mt-5 {
+      margin-top: 20px;
+    }
+
+    .mt-6 {
+      margin-top: 24px;
+    }
+
+    .mb-1 {
+      margin-bottom: 4px;
+    }
+
+    .mb-2 {
+      margin-bottom: 8px;
+    }
 
     /* ── Config error overlay ────────────────────────────────── */
     .config-error {
-      position: fixed; inset: 0; background: rgba(255,255,255,0.95);
-      display: flex; align-items: center; justify-content: center; z-index: 500;
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
     }
+
     .config-error-box {
-      max-width: 480px; padding: 36px; border-radius: var(--radius-lg);
-      background: var(--white); border: 1px solid var(--gray-200); box-shadow: var(--shadow); text-align: center;
+      max-width: 480px;
+      padding: 36px;
+      border-radius: var(--radius-lg);
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow);
+      text-align: center;
     }
-    .config-error-box h2 { margin-bottom: 12px; }
-    .config-error-box p  { font-size: 14px; color: var(--gray-700); line-height: 1.6; }
+
+    .config-error-box h2 {
+      margin-bottom: 12px;
+    }
+
+    .config-error-box p {
+      font-size: 14px;
+      color: var(--gray-700);
+      line-height: 1.6;
+    }
 
     /* ════════════════════════════════════════════════════════════
        MCQ — MENTOR DASHBOARD
@@ -297,48 +755,99 @@
     }
 
     .mcq-meta {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 20px; flex-wrap: wrap;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
     }
+
     .mcq-step-badge {
-      background: var(--purple-light); color: var(--purple);
-      font-size: 12px; font-weight: 600; padding: 3px 10px;
-      border-radius: 20px; white-space: nowrap;
+      background: var(--purple-light);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
     }
+
     .mcq-topic-badge {
-      background: var(--gray-100); color: var(--gray-700);
-      font-size: 12px; font-weight: 500; padding: 3px 10px;
+      background: var(--gray-100);
+      color: var(--gray-700);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 10px;
       border-radius: 20px;
     }
 
     .mcq-question-text {
-      font-size: 17px; font-weight: 600; line-height: 1.5;
-      margin-bottom: 20px; color: var(--gray-900);
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      color: var(--gray-900);
     }
 
-    .mcq-options-mentor { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .mcq-options-mentor {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
 
     .mcq-opt-mentor {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 16px; border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius);
       border: 1.5px solid var(--gray-200);
-      font-size: 14px; transition: border-color 0.2s, background 0.2s;
+      font-size: 14px;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .mcq-opt-mentor.correct-ans  { border-color: var(--green); background: var(--green-light); }
-    .mcq-opt-mentor.wrong-ans    { border-color: var(--gray-300); background: var(--gray-50); opacity: 0.6; }
+
+    .mcq-opt-mentor.correct-ans {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+
+    .mcq-opt-mentor.wrong-ans {
+      border-color: var(--gray-300);
+      background: var(--gray-50);
+      opacity: 0.6;
+    }
 
     .opt-letter {
-      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 700;
-      background: var(--gray-100); color: var(--gray-700);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--gray-100);
+      color: var(--gray-700);
       border: 1.5px solid var(--gray-300);
     }
-    .mcq-opt-mentor.correct-ans .opt-letter { background: var(--green); color: var(--white); border-color: var(--green); }
 
-    .mcq-opt-text { flex: 1; }
+    .mcq-opt-mentor.correct-ans .opt-letter {
+      background: var(--green);
+      color: var(--white);
+      border-color: var(--green);
+    }
 
-    .mcq-actions-mentor { display: flex; gap: 10px; flex-wrap: wrap; }
+    .mcq-opt-text {
+      flex: 1;
+    }
+
+    .mcq-actions-mentor {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
     /* Response panel (right) */
     .mcq-response-panel {
@@ -350,1119 +859,1595 @@
     }
 
     .resp-panel-title {
-      font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px;
-      color: var(--gray-500); margin-bottom: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--gray-500);
+      margin-bottom: 14px;
     }
 
     .resp-stats {
-      display: grid; grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px; margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
     }
-    .resp-stat {
-      background: var(--gray-50); border: 1px solid var(--gray-200);
-      border-radius: var(--radius); padding: 10px 8px; text-align: center;
-    }
-    .resp-stat-num  { font-size: 22px; font-weight: 700; line-height: 1; }
-    .resp-stat-lbl  { font-size: 11px; color: var(--gray-500); margin-top: 3px; }
-    .num-active  { color: var(--blue); }
-    .num-correct { color: var(--green); }
-    .num-wrong   { color: var(--red); }
 
-    .resp-list { display: flex; flex-direction: column; gap: 8px; max-height: 340px; overflow-y: auto; }
+    .resp-stat {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 10px 8px;
+      text-align: center;
+    }
+
+    .resp-stat-num {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .resp-stat-lbl {
+      font-size: 11px;
+      color: var(--gray-500);
+      margin-top: 3px;
+    }
+
+    .num-active {
+      color: var(--blue);
+    }
+
+    .num-correct {
+      color: var(--green);
+    }
+
+    .num-wrong {
+      color: var(--red);
+    }
+
+    .resp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 340px;
+      overflow-y: auto;
+    }
 
     .resp-row {
-      display: flex; align-items: center; gap: 8px;
-      padding: 9px 10px; border-radius: var(--radius);
-      background: var(--gray-50); border: 1px solid var(--gray-200);
-      font-size: 13px; transition: border-color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 10px;
+      border-radius: var(--radius);
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      font-size: 13px;
+      transition: border-color 0.2s;
     }
-    .resp-row.answered { border-color: var(--gray-300); }
 
-    .resp-name { flex: 1; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .resp-answer { font-size: 12px; color: var(--gray-700); }
+    .resp-row.answered {
+      border-color: var(--gray-300);
+    }
+
+    .resp-name {
+      flex: 1;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .resp-answer {
+      font-size: 12px;
+      color: var(--gray-700);
+    }
 
     .resp-badge {
-      font-size: 11px; font-weight: 600; padding: 2px 8px;
-      border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
-    .resp-badge-correct { background: var(--green-light); color: var(--green); }
-    .resp-badge-wrong   { background: var(--red-light);   color: var(--red); }
-    .resp-badge-pending { background: var(--gray-100);    color: var(--gray-500); }
-    .resp-badge-active  { background: var(--blue-light);  color: var(--blue); }
 
-    .resp-empty { text-align: center; padding: 24px 0; color: var(--gray-500); font-size: 13px; }
+    .resp-badge-correct {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .resp-badge-wrong {
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    .resp-badge-pending {
+      background: var(--gray-100);
+      color: var(--gray-500);
+    }
+
+    .resp-badge-active {
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+
+    .resp-empty {
+      text-align: center;
+      padding: 24px 0;
+      color: var(--gray-500);
+      font-size: 13px;
+    }
 
     /* Progress bar */
-    .resp-progress-wrap { margin-bottom: 14px; }
-    .resp-progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray-700); margin-bottom: 5px; }
-    .resp-progress-bar { height: 6px; background: var(--gray-200); border-radius: 3px; overflow: hidden; }
-    .resp-progress-fill { height: 100%; background: var(--blue); border-radius: 3px; transition: width 0.4s; }
+    .resp-progress-wrap {
+      margin-bottom: 14px;
+    }
+
+    .resp-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--gray-700);
+      margin-bottom: 5px;
+    }
+
+    .resp-progress-bar {
+      height: 6px;
+      background: var(--gray-200);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .resp-progress-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 3px;
+      transition: width 0.4s;
+    }
 
     /* ════════════════════════════════════════════════════════════
        MCQ — STUDENT VIEW
     ════════════════════════════════════════════════════════════ */
 
-    .mcq-student-wrap { max-width: 600px; margin: 0 auto; }
+    .mcq-student-wrap {
+      max-width: 600px;
+      margin: 0 auto;
+    }
 
     .mcq-student-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .mcq-student-question {
-      font-size: 18px; font-weight: 600; line-height: 1.55;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.55;
       margin-bottom: 24px;
     }
 
-    .mcq-options-student { display: flex; flex-direction: column; gap: 10px; }
+    .mcq-options-student {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
     .mcq-opt-student {
-      display: flex; align-items: center; gap: 14px;
-      padding: 14px 18px; border-radius: var(--radius);
-      border: 2px solid var(--gray-200); background: var(--white);
-      cursor: pointer; transition: border-color 0.15s, background 0.15s, transform 0.1s;
-      font-size: 15px; text-align: left; width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      border: 2px solid var(--gray-200);
+      background: var(--white);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+      font-size: 15px;
+      text-align: left;
+      width: 100%;
     }
+
     .mcq-opt-student:hover:not(:disabled):not(.selected):not(.answered) {
-      border-color: var(--blue); background: var(--blue-light); transform: translateX(2px);
+      border-color: var(--blue);
+      background: var(--blue-light);
+      transform: translateX(2px);
     }
-    .mcq-opt-student:disabled { cursor: not-allowed; }
-    .mcq-opt-student.selected  { border-color: var(--blue); background: var(--blue-light); }
-    .mcq-opt-student.answered.correct-reveal { border-color: var(--green); background: var(--green-light); }
-    .mcq-opt-student.answered.wrong-reveal   { border-color: var(--red-light); background: var(--red-light); opacity: 0.75; }
-    .mcq-opt-student.answered.my-wrong       { border-color: var(--red); background: var(--red-light); }
+
+    .mcq-opt-student:disabled {
+      cursor: not-allowed;
+    }
+
+    .mcq-opt-student.selected {
+      border-color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .mcq-opt-student.answered.correct-reveal {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+
+    .mcq-opt-student.answered.wrong-reveal {
+      border-color: var(--red-light);
+      background: var(--red-light);
+      opacity: 0.75;
+    }
+
+    .mcq-opt-student.answered.my-wrong {
+      border-color: var(--red);
+      background: var(--red-light);
+    }
 
     .opt-letter-student {
-      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 700;
-      background: var(--gray-100); color: var(--gray-700);
-      border: 1.5px solid var(--gray-300); transition: background 0.15s;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border: 1.5px solid var(--gray-300);
+      transition: background 0.15s;
     }
-    .mcq-opt-student.selected .opt-letter-student { background: var(--blue); color: var(--white); border-color: var(--blue); }
-    .mcq-opt-student.answered.correct-reveal .opt-letter-student { background: var(--green); color: var(--white); border-color: var(--green); }
-    .mcq-opt-student.answered.my-wrong .opt-letter-student { background: var(--red); color: var(--white); border-color: var(--red); }
+
+    .mcq-opt-student.selected .opt-letter-student {
+      background: var(--blue);
+      color: var(--white);
+      border-color: var(--blue);
+    }
+
+    .mcq-opt-student.answered.correct-reveal .opt-letter-student {
+      background: var(--green);
+      color: var(--white);
+      border-color: var(--green);
+    }
+
+    .mcq-opt-student.answered.my-wrong .opt-letter-student {
+      background: var(--red);
+      color: var(--white);
+      border-color: var(--red);
+    }
 
     .mcq-submitted-notice {
-      margin-top: 20px; padding: 14px 18px;
-      background: var(--green-light); color: #155724;
-      border: 1px solid #c3e6cb; border-radius: var(--radius);
-      font-size: 14px; font-weight: 500; text-align: center;
+      margin-top: 20px;
+      padding: 14px 18px;
+      background: var(--green-light);
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
     }
+
     .mcq-revealed-notice {
-      margin-top: 20px; padding: 14px 18px;
-      background: var(--blue-light); color: var(--blue-dark);
-      border: 1px solid #c5d9f7; border-radius: var(--radius);
-      font-size: 14px; text-align: center;
+      margin-top: 20px;
+      padding: 14px 18px;
+      background: var(--blue-light);
+      color: var(--blue-dark);
+      border: 1px solid #c5d9f7;
+      border-radius: var(--radius);
+      font-size: 14px;
+      text-align: center;
     }
 
     .mcq-waiting-notice {
-      text-align: center; padding: 48px 24px; color: var(--gray-500);
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--gray-500);
     }
-    .mcq-waiting-notice .spinner { border-top-color: var(--purple); }
-    .mcq-waiting-notice h3 { font-size: 16px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
+
+    .mcq-waiting-notice .spinner {
+      border-top-color: var(--purple);
+    }
+
+    .mcq-waiting-notice h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 6px;
+    }
+
+    /* ── Student Results screen ─────────────────────────────── */
+    .student-score-banner {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 24px 28px;
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--gray-200);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .student-score-circle {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.1;
+      border: 3px solid;
+    }
+
+    .score-circle-great {
+      border-color: var(--green);
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .score-circle-ok {
+      border-color: #f9ab00;
+      background: #fef9e7;
+      color: #856404;
+    }
+
+    .score-circle-low {
+      border-color: var(--red);
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    .student-score-circle small {
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .student-score-info h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .student-score-info p {
+      font-size: 14px;
+      color: var(--gray-700);
+    }
+
+    .rq-card {
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 12px;
+    }
+
+    .rq-card.rq-correct {
+      border-left: 4px solid var(--green);
+    }
+
+    .rq-card.rq-wrong {
+      border-left: 4px solid var(--red);
+    }
+
+    .rq-card.rq-skipped {
+      border-left: 4px solid var(--gray-400);
+    }
+
+    .rq-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .rq-question {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .rq-opts {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rq-opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--gray-200);
+      font-size: 14px;
+    }
+
+    .rq-opt-correct {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+
+    .rq-opt-my-wrong {
+      border-color: var(--red);
+      background: var(--red-light);
+    }
+
+    .rq-opt-other {
+      opacity: 0.5;
+    }
+
+    .rq-opt .rq-letter {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border: 1.5px solid var(--gray-300);
+    }
+
+    .rq-opt-correct .rq-letter {
+      background: var(--green);
+      color: var(--white);
+      border-color: var(--green);
+    }
+
+    .rq-opt-my-wrong .rq-letter {
+      background: var(--red);
+      color: var(--white);
+      border-color: var(--red);
+    }
 
     /* MCQ Summary (Mentor) */
-    .mcq-summary { max-width: 700px; margin: 0 auto; }
-    .mcq-summary-grid { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-    .summary-stat {
-      flex: 1; min-width: 120px; padding: 20px 16px; text-align: center;
-      border: 1px solid var(--gray-200); border-radius: var(--radius-lg);
-      background: var(--white); box-shadow: var(--shadow-sm);
+    .mcq-summary {
+      max-width: 700px;
+      margin: 0 auto;
     }
-    .summary-stat-num { font-size: 36px; font-weight: 800; line-height: 1; }
-    .summary-stat-lbl { font-size: 13px; color: var(--gray-700); margin-top: 6px; }
 
-    .mcq-results-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    .mcq-results-table th {
-      text-align: left; padding: 10px 14px; font-size: 12px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.7px; color: var(--gray-500);
-      border-bottom: 2px solid var(--gray-200); background: var(--gray-50);
+    .mcq-summary-grid {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
     }
-    .mcq-results-table td { padding: 10px 14px; border-bottom: 1px solid var(--gray-100); }
-    .mcq-results-table tr:last-child td { border-bottom: none; }
+
+    .summary-stat {
+      flex: 1;
+      min-width: 120px;
+      padding: 20px 16px;
+      text-align: center;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .summary-stat-num {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .summary-stat-lbl {
+      font-size: 13px;
+      color: var(--gray-700);
+      margin-top: 6px;
+    }
+
+    .mcq-results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .mcq-results-table th {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--gray-500);
+      border-bottom: 2px solid var(--gray-200);
+      background: var(--gray-50);
+    }
+
+    .mcq-results-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .mcq-results-table tr:last-child td {
+      border-bottom: none;
+    }
 
     /* Student name input */
-    .student-name-wrap { max-width: 400px; margin: 0 auto; }
+    .student-name-wrap {
+      max-width: 400px;
+      margin: 0 auto;
+    }
 
     /* ── Responsive ──────────────────────────────────────────── */
     @media (max-width: 700px) {
-      .role-grid  { grid-template-columns: 1fr; }
-      .mcq-layout { grid-template-columns: 1fr; }
-      .code-value { font-size: 36px; letter-spacing: 8px; }
-      .header { padding: 0 16px; }
-      .main   { padding: 24px 16px; }
-      .card   { padding: 24px 18px; }
-      .class-topbar { flex-direction: column; align-items: flex-start; }
+      .role-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mcq-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .code-value {
+        font-size: 36px;
+        letter-spacing: 8px;
+      }
+
+      .header {
+        padding: 0 16px;
+      }
+
+      .main {
+        padding: 24px 16px;
+      }
+
+      .card {
+        padding: 24px 18px;
+      }
+
+      .class-topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<!-- ══════════════ HEADER ══════════════ -->
-<header class="header">
-  <span class="header-brand">Presenter</span>
-  <div class="header-right" id="header-right"></div>
-</header>
+  <!-- ══════════════ HEADER ══════════════ -->
+  <header class="header">
+    <span class="header-brand">Presenter</span>
+    <div class="header-right" id="header-right"></div>
+  </header>
 
-<!-- ══════════════ MAIN ══════════════ -->
-<main class="main">
+  <!-- ══════════════ MAIN ══════════════ -->
+  <main class="main">
 
-  <!-- ── SCREEN: Role Selection ── -->
-  <div id="screen-role" class="screen active">
-    <div class="hero">
-      <h1>Welcome to Presenter</h1>
-      <p>Select your role to get started</p>
+    <!-- ── SCREEN: Role Selection ── -->
+    <div id="screen-role" class="screen active">
+      <div class="hero">
+        <h1>Welcome to Presenter</h1>
+        <p>Select your role to get started</p>
+      </div>
+      <div class="role-grid">
+        <div class="role-card" onclick="selectRole('admin')">
+          <div class="role-icon icon-admin">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+              <polyline points="16 11 17.5 12.5 21 9" />
+            </svg>
+          </div>
+          <h3>Admin</h3>
+          <p>Create a room and generate a class code for participants</p>
+        </div>
+        <div class="role-card" onclick="selectRole('mentor')">
+          <div class="role-icon icon-mentor">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#34a853" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+            </svg>
+          </div>
+          <h3>Mentor</h3>
+          <p>Lead the session and control what students see in real time</p>
+        </div>
+        <div class="role-card" onclick="selectRole('student')">
+          <div class="role-icon icon-student">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+              <path d="M6 12v5c3 3 9 3 12 0v-5" />
+            </svg>
+          </div>
+          <h3>Student</h3>
+          <p>Join a room using the 6-digit code provided by your admin</p>
+        </div>
+      </div>
     </div>
-    <div class="role-grid">
-      <div class="role-card" onclick="selectRole('admin')">
-        <div class="role-icon icon-admin">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><polyline points="16 11 17.5 12.5 21 9"/>
+
+    <!-- ── SCREEN: Admin ── -->
+    <div id="screen-admin" class="screen">
+      <div class="card card-md">
+        <div class="page-title">Room Created</div>
+        <div class="page-subtitle">Share the code below with your Mentor and Students</div>
+        <div class="code-display">
+          <div class="code-label">Room Code</div>
+          <div class="code-value" id="admin-code">------</div>
+        </div>
+        <button class="btn btn-secondary btn-full" onclick="copyCode()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
           </svg>
-        </div>
-        <h3>Admin</h3>
-        <p>Create a room and generate a class code for participants</p>
-      </div>
-      <div class="role-card" onclick="selectRole('mentor')">
-        <div class="role-icon icon-mentor">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#34a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-          </svg>
-        </div>
-        <h3>Mentor</h3>
-        <p>Lead the session and control what students see in real time</p>
-      </div>
-      <div class="role-card" onclick="selectRole('student')">
-        <div class="role-icon icon-student">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
-          </svg>
-        </div>
-        <h3>Student</h3>
-        <p>Join a room using the 6-digit code provided by your admin</p>
+          Copy Code
+        </button>
+        <hr />
+        <p class="text-sm text-secondary mb-1" style="text-transform:uppercase;letter-spacing:1px;font-weight:500;">
+          Instructions</p>
+        <ul class="steps mt-3">
+          <li><span class="step-num">1</span><span>Share this code with the Mentor so they can start the class</span>
+          </li>
+          <li><span class="step-num">2</span><span>Share this same code with Students so they can join the room</span>
+          </li>
+          <li><span class="step-num">3</span><span>The Mentor will begin the session once everyone is ready</span></li>
+        </ul>
+        <hr />
+        <button class="btn btn-secondary" onclick="goHome()">Back to Home</button>
       </div>
     </div>
-  </div>
 
-  <!-- ── SCREEN: Admin ── -->
-  <div id="screen-admin" class="screen">
-    <div class="card card-md">
-      <div class="page-title">Room Created</div>
-      <div class="page-subtitle">Share the code below with your Mentor and Students</div>
-      <div class="code-display">
-        <div class="code-label">Room Code</div>
-        <div class="code-value" id="admin-code">------</div>
-      </div>
-      <button class="btn btn-secondary btn-full" onclick="copyCode()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-        </svg>
-        Copy Code
-      </button>
-      <hr />
-      <p class="text-sm text-secondary mb-1" style="text-transform:uppercase;letter-spacing:1px;font-weight:500;">Instructions</p>
-      <ul class="steps mt-3">
-        <li><span class="step-num">1</span><span>Share this code with the Mentor so they can start the class</span></li>
-        <li><span class="step-num">2</span><span>Share this same code with Students so they can join the room</span></li>
-        <li><span class="step-num">3</span><span>The Mentor will begin the session once everyone is ready</span></li>
-      </ul>
-      <hr />
-      <button class="btn btn-secondary" onclick="goHome()">Back to Home</button>
-    </div>
-  </div>
-
-  <!-- ── SCREEN: Mentor Login ── -->
-  <div id="screen-mentor-login" class="screen">
-    <div class="card card-sm">
-      <div class="page-title">Mentor Login</div>
-      <div class="page-subtitle">Enter the room code to access your controls</div>
-      <div class="form-group">
-        <label class="form-label">Room Code</label>
-        <input type="text" id="mentor-code-input" class="form-input code-input"
-          maxlength="6" placeholder="000000"
-          oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-          onkeydown="if(event.key==='Enter')mentorJoin()" />
-        <div class="form-error" id="mentor-error" style="display:none"></div>
-      </div>
-      <button class="btn btn-primary btn-full btn-lg" onclick="mentorJoin()">Enter Room</button>
-      <div class="mt-4"><button class="btn btn-secondary" onclick="goHome()">Back</button></div>
-    </div>
-  </div>
-
-  <!-- ── SCREEN: Mentor Class (images) ── -->
-  <div id="screen-mentor-class" class="screen">
-    <div class="card card-lg">
-      <div class="class-topbar">
-        <div class="class-topbar-left">
-          <h2>Presentation View</h2>
-          <p class="text-sm text-secondary" id="mentor-status-label">Start the class when participants are ready</p>
+    <!-- ── SCREEN: Mentor Login ── -->
+    <div id="screen-mentor-login" class="screen">
+      <div class="card card-sm">
+        <div class="page-title">Mentor Login</div>
+        <div class="page-subtitle">Enter the room code to access your controls</div>
+        <div class="form-group">
+          <label class="form-label">Room Code</label>
+          <input type="text" id="mentor-code-input" class="form-input code-input" maxlength="6" placeholder="000000"
+            oninput="this.value=this.value.replace(/[^0-9]/g,'')" onkeydown="if(event.key==='Enter')mentorJoin()" />
+          <div class="form-error" id="mentor-error" style="display:none"></div>
         </div>
-        <div class="class-topbar-right">
-          <span class="status-badge status-waiting" id="mentor-status-badge">
-            <span class="status-dot dot-orange"></span> Waiting
+        <button class="btn btn-primary btn-full btn-lg" onclick="mentorJoin()">Enter Room</button>
+        <div class="mt-4"><button class="btn btn-secondary" onclick="goHome()">Back</button></div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN: Mentor Class (images) ── -->
+    <div id="screen-mentor-class" class="screen">
+      <div class="card card-lg">
+        <div class="class-topbar">
+          <div class="class-topbar-left">
+            <h2>Presentation View</h2>
+            <p class="text-sm text-secondary" id="mentor-status-label">Start the class when participants are ready</p>
+          </div>
+          <div class="class-topbar-right">
+            <span class="status-badge status-waiting" id="mentor-status-badge">
+              <span class="status-dot dot-orange"></span> Waiting
+            </span>
+            <button class="btn btn-success" id="btn-start" onclick="startClass()">Start Class</button>
+            <button class="btn btn-danger" id="btn-end" onclick="endClass()" style="display:none">End Class</button>
+          </div>
+        </div>
+
+        <div class="image-wrap">
+          <div class="img-placeholder" id="mentor-placeholder">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="M8 21h8M12 17v4" />
+            </svg>
+            <p>Start the class to display the first image</p>
+          </div>
+          <img src="" alt="Presentation slide" class="class-img" id="mentor-img" style="display:none" />
+          <div class="img-overlay" id="mentor-overlay" style="display:none">
+            <span class="img-counter" id="mentor-counter">Image 1 of 3</span>
+          </div>
+        </div>
+
+        <div class="controls" id="mentor-controls" style="display:none">
+          <button class="nav-btn" id="btn-prev" disabled>Previous</button>
+          <div class="dots" id="mentor-dots"></div>
+          <button class="nav-btn" id="btn-next">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN: Mentor MCQ ── -->
+    <div id="screen-mentor-mcq" class="screen">
+      <div class="card-lg card-centered" style="width:100%;">
+
+        <!-- MCQ topbar -->
+        <div class="class-topbar" style="margin-bottom:20px;">
+          <div class="class-topbar-left">
+            <h2 id="mcq-mentor-title">MCQ Session</h2>
+            <p class="text-sm text-secondary" id="mcq-mentor-subtitle">Question 1 of 3</p>
+          </div>
+          <div class="class-topbar-right">
+            <span class="status-badge status-mcq">
+              <span class="status-dot dot-purple"></span> MCQ Active
+            </span>
+            <button class="btn btn-danger" onclick="endMcq()">End MCQ</button>
+          </div>
+        </div>
+
+        <div class="mcq-layout">
+
+          <!-- Left: question + options + actions -->
+          <div class="mcq-question-panel">
+            <div class="mcq-meta">
+              <span class="mcq-step-badge" id="mcq-step-badge">Question 1 / 3</span>
+              <span class="mcq-topic-badge" id="mcq-topic-badge">General</span>
+            </div>
+            <div class="mcq-question-text" id="mcq-mentor-q-text">Loading question…</div>
+            <div class="mcq-options-mentor" id="mcq-mentor-opts"></div>
+            <div class="mcq-actions-mentor">
+              <button class="btn btn-secondary" id="btn-reveal" onclick="revealAnswer()">Show Correct Answer</button>
+              <button class="btn btn-purple" id="btn-mcq-next" onclick="nextMcqQuestion()" style="display:none">Next
+                Question</button>
+              <button class="btn btn-success" id="btn-mcq-finish" onclick="finishMcq()" style="display:none">Finish
+                &amp; Show Results</button>
+            </div>
+          </div>
+
+          <!-- Right: live response panel -->
+          <div class="mcq-response-panel">
+            <div class="resp-panel-title">Live Responses</div>
+
+            <div class="resp-stats">
+              <div class="resp-stat">
+                <div class="resp-stat-num num-active" id="stat-active">0</div>
+                <div class="resp-stat-lbl">Active</div>
+              </div>
+              <div class="resp-stat">
+                <div class="resp-stat-num num-correct" id="stat-correct">0</div>
+                <div class="resp-stat-lbl">Correct</div>
+              </div>
+              <div class="resp-stat">
+                <div class="resp-stat-num num-wrong" id="stat-wrong">0</div>
+                <div class="resp-stat-lbl">Incorrect</div>
+              </div>
+            </div>
+
+            <div class="resp-progress-wrap">
+              <div class="resp-progress-label">
+                <span>Answered</span>
+                <span id="resp-prog-label">0 / 0</span>
+              </div>
+              <div class="resp-progress-bar">
+                <div class="resp-progress-fill" id="resp-prog-fill" style="width:0%"></div>
+              </div>
+            </div>
+
+            <div class="resp-list" id="resp-list">
+              <div class="resp-empty">No students have answered yet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN: Mentor MCQ Summary ── -->
+    <div id="screen-mentor-mcq-summary" class="screen">
+      <div class="card card-lg">
+        <div class="class-topbar">
+          <div>
+            <h2>MCQ Results</h2>
+            <p class="text-sm text-secondary">Session complete</p>
+          </div>
+          <button class="btn btn-danger" onclick="endClass()">End Class</button>
+        </div>
+        <div class="mcq-summary-grid" id="mcq-summary-stats"></div>
+        <table class="mcq-results-table" id="mcq-summary-table">
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Topic</th>
+              <th>Responded</th>
+              <th>Correct</th>
+              <th>Accuracy</th>
+            </tr>
+          </thead>
+          <tbody id="mcq-summary-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── SCREEN: Student Login ── -->
+    <div id="screen-student-login" class="screen">
+      <div class="card card-sm">
+        <div class="page-title">Join a Room</div>
+        <div class="page-subtitle">Enter the 6-digit code provided by your Admin</div>
+        <div class="form-group">
+          <label class="form-label">Room Code</label>
+          <input type="text" id="student-code-input" class="form-input code-input" maxlength="6" placeholder="000000"
+            oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+            onkeydown="if(event.key==='Enter')studentNameStep()" />
+          <div class="form-error" id="student-error" style="display:none"></div>
+        </div>
+        <button class="btn btn-primary btn-full btn-lg" onclick="studentNameStep()">Continue</button>
+        <div class="mt-4"><button class="btn btn-secondary" onclick="goHome()">Back</button></div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN: Student Name ── -->
+    <div id="screen-student-name" class="screen">
+      <div class="card card-sm">
+        <div class="page-title">Your Name</div>
+        <div class="page-subtitle">This name will be shown to the Mentor during the MCQ</div>
+        <div class="form-group">
+          <label class="form-label">Display Name</label>
+          <input type="text" id="student-name-input" class="form-input" maxlength="30" placeholder="e.g. Alex Smith"
+            onkeydown="if(event.key==='Enter')studentJoin()" />
+          <div class="form-error" id="student-name-error" style="display:none"></div>
+        </div>
+        <button class="btn btn-primary btn-full btn-lg" onclick="studentJoin()">Join Room</button>
+        <div class="mt-4"><button class="btn btn-secondary" onclick="showScreen('student-login')">Back</button></div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN: Student Waiting ── -->
+    <div id="screen-student-waiting" class="screen">
+      <div class="card card-sm">
+        <div class="waiting-wrap">
+          <div class="spinner"></div>
+          <h2>Waiting for class to start</h2>
+          <p class="text-secondary text-sm mt-3">
+            You have joined room <strong id="student-room-code">------</strong>.<br />
+            The Mentor will begin the session shortly.
+          </p>
+          <div class="mt-6">
+            <button class="btn btn-secondary" onclick="goHome()">Leave Room</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN: Student Class ── -->
+    <div id="screen-student-class" class="screen">
+      <div class="card card-lg">
+        <div class="class-topbar">
+          <div class="class-topbar-left">
+            <h2>Live Session</h2>
+            <p class="text-sm text-secondary">The Mentor controls the presentation. Your view updates automatically.</p>
+          </div>
+          <span class="status-badge status-live">
+            <span class="status-dot dot-green"></span> Live
           </span>
-          <button class="btn btn-success" id="btn-start" onclick="startClass()">Start Class</button>
-          <button class="btn btn-danger"  id="btn-end"   onclick="endClass()"   style="display:none">End Class</button>
         </div>
-      </div>
-
-      <div class="image-wrap">
-        <div class="img-placeholder" id="mentor-placeholder">
-          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
-          </svg>
-          <p>Start the class to display the first image</p>
+        <div class="image-wrap">
+          <img src="" alt="Presentation slide" class="class-img" id="student-img" />
+          <div class="img-overlay">
+            <span class="img-counter" id="student-counter">Image 1 of 3</span>
+          </div>
         </div>
-        <img src="" alt="Presentation slide" class="class-img" id="mentor-img" style="display:none" />
-        <div class="img-overlay" id="mentor-overlay" style="display:none">
-          <span class="img-counter" id="mentor-counter">Image 1 of 3</span>
-        </div>
-      </div>
-
-      <div class="controls" id="mentor-controls" style="display:none">
-        <button class="nav-btn" id="btn-prev" disabled>Previous</button>
-        <div class="dots" id="mentor-dots"></div>
-        <button class="nav-btn" id="btn-next">Next</button>
       </div>
     </div>
-  </div>
 
-  <!-- ── SCREEN: Mentor MCQ ── -->
-  <div id="screen-mentor-mcq" class="screen">
-    <div class="card-lg card-centered" style="width:100%;">
+    <!-- ── SCREEN: Student MCQ ── -->
+    <div id="screen-student-mcq" class="screen">
+      <div class="card card-lg">
+        <div class="mcq-student-wrap">
 
-      <!-- MCQ topbar -->
-      <div class="class-topbar" style="margin-bottom:20px;">
-        <div class="class-topbar-left">
-          <h2 id="mcq-mentor-title">MCQ Session</h2>
-          <p class="text-sm text-secondary" id="mcq-mentor-subtitle">Question 1 of 3</p>
+          <div class="mcq-student-header">
+            <span class="mcq-step-badge" id="mcq-student-step">Question 1 / 3</span>
+            <span class="status-badge status-mcq">
+              <span class="status-dot dot-purple"></span> MCQ Active
+            </span>
+          </div>
+
+          <!-- Waiting for first question -->
+          <div class="mcq-waiting-notice" id="mcq-waiting-notice">
+            <div class="spinner" style="border-top-color:var(--purple);"></div>
+            <h3>MCQ session starting</h3>
+            <p class="text-sm">Waiting for the Mentor to send the first question…</p>
+          </div>
+
+          <!-- Question content (hidden until question arrives) -->
+          <div id="mcq-student-content" style="display:none">
+            <div class="mcq-student-question" id="mcq-student-q-text"></div>
+            <div class="mcq-options-student" id="mcq-student-opts"></div>
+            <div id="mcq-student-feedback" style="display:none"></div>
+          </div>
+
         </div>
-        <div class="class-topbar-right">
-          <span class="status-badge status-mcq">
-            <span class="status-dot dot-purple"></span> MCQ Active
+      </div>
+    </div>
+
+    <!-- ── SCREEN: Student MCQ Results ── -->
+    <div id="screen-student-results" class="screen">
+      <div class="card card-lg">
+
+        <div class="class-topbar">
+          <div>
+            <h2>Your Results</h2>
+            <p class="text-sm text-secondary">MCQ session complete</p>
+          </div>
+          <span class="status-badge" style="background:var(--gray-100);color:var(--gray-700);">
+            Session Ended
           </span>
-          <button class="btn btn-danger" onclick="endMcq()">End MCQ</button>
-        </div>
-      </div>
-
-      <div class="mcq-layout">
-
-        <!-- Left: question + options + actions -->
-        <div class="mcq-question-panel">
-          <div class="mcq-meta">
-            <span class="mcq-step-badge" id="mcq-step-badge">Question 1 / 3</span>
-            <span class="mcq-topic-badge" id="mcq-topic-badge">General</span>
-          </div>
-          <div class="mcq-question-text" id="mcq-mentor-q-text">Loading question…</div>
-          <div class="mcq-options-mentor" id="mcq-mentor-opts"></div>
-          <div class="mcq-actions-mentor">
-            <button class="btn btn-secondary" id="btn-reveal" onclick="revealAnswer()">Show Correct Answer</button>
-            <button class="btn btn-purple"    id="btn-mcq-next" onclick="nextMcqQuestion()" style="display:none">Next Question</button>
-            <button class="btn btn-success"   id="btn-mcq-finish" onclick="finishMcq()"  style="display:none">Finish &amp; Show Results</button>
-          </div>
         </div>
 
-        <!-- Right: live response panel -->
-        <div class="mcq-response-panel">
-          <div class="resp-panel-title">Live Responses</div>
+        <!-- Personal score card -->
+        <div id="student-score-card" style="margin-bottom:24px;"></div>
 
-          <div class="resp-stats">
-            <div class="resp-stat">
-              <div class="resp-stat-num num-active" id="stat-active">0</div>
-              <div class="resp-stat-lbl">Active</div>
-            </div>
-            <div class="resp-stat">
-              <div class="resp-stat-num num-correct" id="stat-correct">0</div>
-              <div class="resp-stat-lbl">Correct</div>
-            </div>
-            <div class="resp-stat">
-              <div class="resp-stat-num num-wrong" id="stat-wrong">0</div>
-              <div class="resp-stat-lbl">Incorrect</div>
-            </div>
-          </div>
+        <!-- Per-question breakdown -->
+        <p class="text-sm text-secondary mb-2" style="text-transform:uppercase;letter-spacing:1px;font-weight:600;">
+          Question Breakdown</p>
+        <div id="student-results-breakdown"></div>
 
-          <div class="resp-progress-wrap">
-            <div class="resp-progress-label">
-              <span>Answered</span>
-              <span id="resp-prog-label">0 / 0</span>
-            </div>
-            <div class="resp-progress-bar">
-              <div class="resp-progress-fill" id="resp-prog-fill" style="width:0%"></div>
-            </div>
-          </div>
-
-          <div class="resp-list" id="resp-list">
-            <div class="resp-empty">No students have answered yet</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── SCREEN: Mentor MCQ Summary ── -->
-  <div id="screen-mentor-mcq-summary" class="screen">
-    <div class="card card-lg">
-      <div class="class-topbar">
-        <div>
-          <h2>MCQ Results</h2>
-          <p class="text-sm text-secondary">Session complete</p>
-        </div>
-        <button class="btn btn-danger" onclick="endClass()">End Class</button>
-      </div>
-      <div class="mcq-summary-grid" id="mcq-summary-stats"></div>
-      <table class="mcq-results-table" id="mcq-summary-table">
-        <thead>
-          <tr>
-            <th>Question</th>
-            <th>Topic</th>
-            <th>Responded</th>
-            <th>Correct</th>
-            <th>Accuracy</th>
-          </tr>
-        </thead>
-        <tbody id="mcq-summary-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ── SCREEN: Student Login ── -->
-  <div id="screen-student-login" class="screen">
-    <div class="card card-sm">
-      <div class="page-title">Join a Room</div>
-      <div class="page-subtitle">Enter the 6-digit code provided by your Admin</div>
-      <div class="form-group">
-        <label class="form-label">Room Code</label>
-        <input type="text" id="student-code-input" class="form-input code-input"
-          maxlength="6" placeholder="000000"
-          oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-          onkeydown="if(event.key==='Enter')studentNameStep()" />
-        <div class="form-error" id="student-error" style="display:none"></div>
-      </div>
-      <button class="btn btn-primary btn-full btn-lg" onclick="studentNameStep()">Continue</button>
-      <div class="mt-4"><button class="btn btn-secondary" onclick="goHome()">Back</button></div>
-    </div>
-  </div>
-
-  <!-- ── SCREEN: Student Name ── -->
-  <div id="screen-student-name" class="screen">
-    <div class="card card-sm">
-      <div class="page-title">Your Name</div>
-      <div class="page-subtitle">This name will be shown to the Mentor during the MCQ</div>
-      <div class="form-group">
-        <label class="form-label">Display Name</label>
-        <input type="text" id="student-name-input" class="form-input"
-          maxlength="30" placeholder="e.g. Alex Smith"
-          onkeydown="if(event.key==='Enter')studentJoin()" />
-        <div class="form-error" id="student-name-error" style="display:none"></div>
-      </div>
-      <button class="btn btn-primary btn-full btn-lg" onclick="studentJoin()">Join Room</button>
-      <div class="mt-4"><button class="btn btn-secondary" onclick="showScreen('student-login')">Back</button></div>
-    </div>
-  </div>
-
-  <!-- ── SCREEN: Student Waiting ── -->
-  <div id="screen-student-waiting" class="screen">
-    <div class="card card-sm">
-      <div class="waiting-wrap">
-        <div class="spinner"></div>
-        <h2>Waiting for class to start</h2>
-        <p class="text-secondary text-sm mt-3">
-          You have joined room <strong id="student-room-code">------</strong>.<br />
-          The Mentor will begin the session shortly.
-        </p>
-        <div class="mt-6">
+        <div style="margin-top:28px;">
           <button class="btn btn-secondary" onclick="goHome()">Leave Room</button>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── SCREEN: Student Class ── -->
-  <div id="screen-student-class" class="screen">
-    <div class="card card-lg">
-      <div class="class-topbar">
-        <div class="class-topbar-left">
-          <h2>Live Session</h2>
-          <p class="text-sm text-secondary">The Mentor controls the presentation. Your view updates automatically.</p>
-        </div>
-        <span class="status-badge status-live">
-          <span class="status-dot dot-green"></span> Live
-        </span>
-      </div>
-      <div class="image-wrap">
-        <img src="" alt="Presentation slide" class="class-img" id="student-img" />
-        <div class="img-overlay">
-          <span class="img-counter" id="student-counter">Image 1 of 3</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── SCREEN: Student MCQ ── -->
-  <div id="screen-student-mcq" class="screen">
-    <div class="card card-lg">
-      <div class="mcq-student-wrap">
-
-        <div class="mcq-student-header">
-          <span class="mcq-step-badge" id="mcq-student-step">Question 1 / 3</span>
-          <span class="status-badge status-mcq">
-            <span class="status-dot dot-purple"></span> MCQ Active
-          </span>
-        </div>
-
-        <!-- Waiting for first question -->
-        <div class="mcq-waiting-notice" id="mcq-waiting-notice">
-          <div class="spinner" style="border-top-color:var(--purple);"></div>
-          <h3>MCQ session starting</h3>
-          <p class="text-sm">Waiting for the Mentor to send the first question…</p>
-        </div>
-
-        <!-- Question content (hidden until question arrives) -->
-        <div id="mcq-student-content" style="display:none">
-          <div class="mcq-student-question" id="mcq-student-q-text"></div>
-          <div class="mcq-options-student" id="mcq-student-opts"></div>
-          <div id="mcq-student-feedback" style="display:none"></div>
-        </div>
 
       </div>
     </div>
+
+  </main>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Config error -->
+  <div class="config-error" id="config-error" style="display:none">
+    <div class="config-error-box">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5"
+        stroke-linecap="round" style="margin-bottom:16px;">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+      <h2>Configuration Required</h2>
+      <p class="mt-3">
+        Pusher credentials are not configured.<br />
+        Please follow the setup instructions in <strong>README.md</strong> to add your environment variables and
+        redeploy.
+      </p>
+    </div>
   </div>
 
-</main>
+  <script>
+    // ═══════════════════════════════════════════════════════════════
+    // DATA — IMAGES
+    // ═══════════════════════════════════════════════════════════════
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
+    const IMAGES = [
+      'https://miro.medium.com/v2/resize:fit:1400/format:webp/1*hZ3m0uurJl2VZ8nDYdu5QA.png',
+      'https://miro.medium.com/v2/resize:fit:2000/format:webp/1*WVPQq6sr_k8U88B8kr2erg.png',
+      'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=80&auto=format&fit=crop',
+    ];
 
-<!-- Config error -->
-<div class="config-error" id="config-error" style="display:none">
-  <div class="config-error-box">
-    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:16px;">
-      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-    </svg>
-    <h2>Configuration Required</h2>
-    <p class="mt-3">
-      Pusher credentials are not configured.<br />
-      Please follow the setup instructions in <strong>README.md</strong> to add your environment variables and redeploy.
-    </p>
-  </div>
-</div>
+    // ═══════════════════════════════════════════════════════════════
+    // DATA — MCQ QUESTION BANK  (8 demo questions, 3 are picked randomly)
+    // ═══════════════════════════════════════════════════════════════
 
-<script>
-// ═══════════════════════════════════════════════════════════════
-// DATA — IMAGES
-// ═══════════════════════════════════════════════════════════════
+    const QUESTION_BANK = [
+      {
+        topic: 'Networking',
+        text: 'Which protocol is primarily used to assign IP addresses dynamically to devices on a network?',
+        options: ['DNS', 'DHCP', 'FTP', 'SMTP'],
+        correct: 1,
+      },
+      {
+        topic: 'Programming',
+        text: 'What does the acronym "API" stand for?',
+        options: ['Application Programming Interface', 'Automated Process Integration', 'Application Protocol Index', 'Advanced Programming Input'],
+        correct: 0,
+      },
+      {
+        topic: 'Databases',
+        text: 'Which of the following is a NoSQL database?',
+        options: ['MySQL', 'PostgreSQL', 'MongoDB', 'SQLite'],
+        correct: 2,
+      },
+      {
+        topic: 'Web Development',
+        text: 'What does CSS stand for?',
+        options: ['Computer Style Sheets', 'Cascading Style Sheets', 'Creative Style Syntax', 'Coded Style Sheets'],
+        correct: 1,
+      },
+      {
+        topic: 'Security',
+        text: 'Which of the following best describes a "man-in-the-middle" attack?',
+        options: [
+          'An attacker floods a server with traffic to cause downtime',
+          'An attacker intercepts and potentially alters communications between two parties',
+          'An attacker guesses passwords through repeated attempts',
+          'An attacker plants malicious code in a trusted application',
+        ],
+        correct: 1,
+      },
+      {
+        topic: 'Operating Systems',
+        text: 'What is the role of the kernel in an operating system?',
+        options: [
+          'It manages the graphical user interface',
+          'It provides email and messaging services',
+          'It acts as the core layer managing hardware and system resources',
+          'It compiles source code into executable programs',
+        ],
+        correct: 2,
+      },
+      {
+        topic: 'Algorithms',
+        text: 'What is the time complexity of binary search on a sorted array of n elements?',
+        options: ['O(n)', 'O(n²)', 'O(log n)', 'O(1)'],
+        correct: 2,
+      },
+      {
+        topic: 'Cloud Computing',
+        text: 'Which of the following is an example of "Infrastructure as a Service" (IaaS)?',
+        options: ['Google Docs', 'Salesforce CRM', 'Amazon EC2', 'GitHub Actions'],
+        correct: 2,
+      },
+    ];
 
-const IMAGES = [
-  'https://images.unsplash.com/photo-1517842645767-c639042777db?w=1200&q=80&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&q=80&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=80&auto=format&fit=crop',
-];
+    const LETTERS = ['A', 'B', 'C', 'D'];
 
-// ═══════════════════════════════════════════════════════════════
-// DATA — MCQ QUESTION BANK  (8 demo questions, 3 are picked randomly)
-// ═══════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════════════════════
 
-const QUESTION_BANK = [
-  {
-    topic: 'Networking',
-    text: 'Which protocol is primarily used to assign IP addresses dynamically to devices on a network?',
-    options: ['DNS', 'DHCP', 'FTP', 'SMTP'],
-    correct: 1,
-  },
-  {
-    topic: 'Programming',
-    text: 'What does the acronym "API" stand for?',
-    options: ['Application Programming Interface', 'Automated Process Integration', 'Application Protocol Index', 'Advanced Programming Input'],
-    correct: 0,
-  },
-  {
-    topic: 'Databases',
-    text: 'Which of the following is a NoSQL database?',
-    options: ['MySQL', 'PostgreSQL', 'MongoDB', 'SQLite'],
-    correct: 2,
-  },
-  {
-    topic: 'Web Development',
-    text: 'What does CSS stand for?',
-    options: ['Computer Style Sheets', 'Cascading Style Sheets', 'Creative Style Syntax', 'Coded Style Sheets'],
-    correct: 1,
-  },
-  {
-    topic: 'Security',
-    text: 'Which of the following best describes a "man-in-the-middle" attack?',
-    options: [
-      'An attacker floods a server with traffic to cause downtime',
-      'An attacker intercepts and potentially alters communications between two parties',
-      'An attacker guesses passwords through repeated attempts',
-      'An attacker plants malicious code in a trusted application',
-    ],
-    correct: 1,
-  },
-  {
-    topic: 'Operating Systems',
-    text: 'What is the role of the kernel in an operating system?',
-    options: [
-      'It manages the graphical user interface',
-      'It provides email and messaging services',
-      'It acts as the core layer managing hardware and system resources',
-      'It compiles source code into executable programs',
-    ],
-    correct: 2,
-  },
-  {
-    topic: 'Algorithms',
-    text: 'What is the time complexity of binary search on a sorted array of n elements?',
-    options: ['O(n)', 'O(n²)', 'O(log n)', 'O(1)'],
-    correct: 2,
-  },
-  {
-    topic: 'Cloud Computing',
-    text: 'Which of the following is an example of "Infrastructure as a Service" (IaaS)?',
-    options: ['Google Docs', 'Salesforce CRM', 'Amazon EC2', 'GitHub Actions'],
-    correct: 2,
-  },
-];
+    const state = {
+      // shared
+      role: null,
+      roomCode: null,
+      imgIndex: 0,
+      classStarted: false,
+      pusherKey: '',
+      pusherCluster: '',
+      pusher: null,
+      channel: null,
+      heartbeat: null,
 
-const LETTERS = ['A', 'B', 'C', 'D'];
+      // student
+      studentName: '',
+      mcqStudentHistory: [], // [{ optionIndex | null, correct }] one entry per question
 
-// ═══════════════════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════════════════
+      // mcq — common
+      mcqActive: false,
+      mcqQuestions: [],   // 3 selected questions (full objects)
+      mcqQIndex: 0,    // current question index (0-based)
 
-const state = {
-  // shared
-  role:         null,
-  roomCode:     null,
-  imgIndex:     0,
-  classStarted: false,
-  pusherKey:    '',
-  pusherCluster:'',
-  pusher:       null,
-  channel:      null,
-  heartbeat:    null,
+      // mcq — mentor only
+      mcqAnswers: {},   // { studentName: { optionIndex, correct, timestamp } }
+      mcqRevealed: false,
+      mcqHistory: [],   // per-question summary for final results
 
-  // student
-  studentName:  '',
-
-  // mcq — common
-  mcqActive:    false,
-  mcqQuestions: [],   // 3 selected questions (full objects)
-  mcqQIndex:    0,    // current question index (0-based)
-
-  // mcq — mentor only
-  mcqAnswers:   {},   // { studentName: { optionIndex, correct, timestamp } }
-  mcqRevealed:  false,
-  mcqHistory:   [],   // per-question summary for final results
-
-  // mcq — student only
-  mcqSubmitted: false,
-  mcqStudentAnswer: null,
-};
-
-// ═══════════════════════════════════════════════════════════════
-// SCREENS
-// ═══════════════════════════════════════════════════════════════
-
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
-  window.scrollTo(0, 0);
-}
-
-function updateHeader() {
-  const right = document.getElementById('header-right');
-  let html = '';
-  if (state.roomCode) html += `<span class="pill pill-blue">Room ${state.roomCode}</span>`;
-  if (state.mcqActive) html += `<span class="pill pill-purple">MCQ</span>`;
-  if (state.role) {
-    const labels = { admin: 'Admin', mentor: 'Mentor', student: 'Student' };
-    html += `<span class="pill pill-gray">${labels[state.role]}</span>`;
-    html += `<button class="btn-ghost" onclick="goHome()">Leave</button>`;
-  }
-  right.innerHTML = html;
-}
-
-// ═══════════════════════════════════════════════════════════════
-// UTILITIES
-// ═══════════════════════════════════════════════════════════════
-
-function rand6() { return Math.floor(100000 + Math.random() * 900000).toString(); }
-
-function pickRandom(arr, n) {
-  const copy = [...arr];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy.slice(0, n);
-}
-
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2600);
-}
-
-function showErr(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.style.display = 'block'; }
-function hideErr(id) { document.getElementById(id).style.display = 'none'; }
-function isValidCode(code) { return /^\d{6}$/.test(code); }
-
-// ═══════════════════════════════════════════════════════════════
-// PUSHER SETUP
-// ═══════════════════════════════════════════════════════════════
-
-async function loadConfig() {
-  try {
-    const res = await fetch('/api/config');
-    const cfg = await res.json();
-    state.pusherKey     = cfg.pusherKey     || '';
-    state.pusherCluster = cfg.pusherCluster || 'ap2';
-  } catch (e) { console.error('Failed to load config:', e); }
-}
-
-function requirePusher() {
-  if (!state.pusherKey) { document.getElementById('config-error').style.display = 'flex'; return false; }
-  return true;
-}
-
-function connectRoom(code) {
-  if (state.pusher) state.pusher.disconnect();
-  state.pusher  = new Pusher(state.pusherKey, { cluster: state.pusherCluster });
-  state.channel = state.pusher.subscribe('room-' + code);
-
-  // ── Image events ────────────────────────────────────────────
-  state.channel.bind('class-started', data => {
-    if (state.role !== 'student') return;
-    state.classStarted = true;
-    state.imgIndex = data.imageIndex || 0;
-    renderStudentView();
-    showScreen('student-class');
-  });
-
-  state.channel.bind('image-changed', data => {
-    state.imgIndex = data.imageIndex;
-    if      (state.role === 'student') renderStudentView();
-    else if (state.role === 'mentor')  renderMentorImage();
-  });
-
-  state.channel.bind('class-state', data => {
-    if (state.role !== 'student' || state.classStarted) return;
-    state.classStarted = true;
-    state.imgIndex = data.imageIndex;
-    renderStudentView();
-    showScreen('student-class');
-  });
-
-  state.channel.bind('class-ended', () => {
-    if (state.role === 'student') { toast('The class has ended.'); goHome(); }
-  });
-
-  // ── MCQ events ───────────────────────────────────────────────
-  state.channel.bind('mcq-started', data => {
-    if (state.role !== 'student') return;
-    state.mcqActive    = true;
-    state.mcqQuestions = data.questions;
-    state.mcqQIndex    = 0;
-    updateHeader();
-    showScreen('student-mcq');
-    document.getElementById('mcq-waiting-notice').style.display  = 'block';
-    document.getElementById('mcq-student-content').style.display = 'none';
-  });
-
-  state.channel.bind('mcq-question', data => {
-    if (state.role !== 'student') return;
-    state.mcqQIndex       = data.qIndex;
-    state.mcqSubmitted    = false;
-    state.mcqStudentAnswer= null;
-    renderStudentQuestion(data.qIndex);
-  });
-
-  state.channel.bind('mcq-answer', data => {
-    // Only the mentor processes incoming answers
-    if (state.role !== 'mentor') return;
-    const q = state.mcqQuestions[state.mcqQIndex];
-    const isCorrect = data.optionIndex === q.correct;
-    state.mcqAnswers[data.studentName] = {
-      optionIndex: data.optionIndex,
-      correct: isCorrect,
-      timestamp: Date.now(),
+      // mcq — student only
+      mcqSubmitted: false,
+      mcqStudentAnswer: null,
     };
-    renderMentorResponses();
-  });
 
-  state.channel.bind('mcq-reveal', data => {
-    if (state.role !== 'student') return;
-    revealAnswerStudent(data.correctIndex);
-  });
+    // ═══════════════════════════════════════════════════════════════
+    // SCREENS
+    // ═══════════════════════════════════════════════════════════════
 
-  state.channel.bind('mcq-ended', () => {
-    if (state.role === 'student') {
-      toast('The MCQ session has ended.');
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-' + id).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function updateHeader() {
+      const right = document.getElementById('header-right');
+      let html = '';
+      if (state.roomCode) html += `<span class="pill pill-blue">Room ${state.roomCode}</span>`;
+      if (state.mcqActive) html += `<span class="pill pill-purple">MCQ</span>`;
+      if (state.role) {
+        const labels = { admin: 'Admin', mentor: 'Mentor', student: 'Student' };
+        html += `<span class="pill pill-gray">${labels[state.role]}</span>`;
+        html += `<button class="btn-ghost" onclick="goHome()">Leave</button>`;
+      }
+      right.innerHTML = html;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // UTILITIES
+    // ═══════════════════════════════════════════════════════════════
+
+    function rand6() { return Math.floor(100000 + Math.random() * 900000).toString(); }
+
+    function pickRandom(arr, n) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy.slice(0, n);
+    }
+
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2600);
+    }
+
+    function showErr(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.style.display = 'block'; }
+    function hideErr(id) { document.getElementById(id).style.display = 'none'; }
+    function isValidCode(code) { return /^\d{6}$/.test(code); }
+
+    // ═══════════════════════════════════════════════════════════════
+    // PUSHER SETUP
+    // ═══════════════════════════════════════════════════════════════
+
+    async function loadConfig() {
+      try {
+        const res = await fetch('/api/config');
+        const cfg = await res.json();
+        state.pusherKey = cfg.pusherKey || '';
+        state.pusherCluster = cfg.pusherCluster || 'ap2';
+      } catch (e) { console.error('Failed to load config:', e); }
+    }
+
+    function requirePusher() {
+      if (!state.pusherKey) { document.getElementById('config-error').style.display = 'flex'; return false; }
+      return true;
+    }
+
+    function connectRoom(code) {
+      if (state.pusher) state.pusher.disconnect();
+      state.pusher = new Pusher(state.pusherKey, { cluster: state.pusherCluster });
+      state.channel = state.pusher.subscribe('room-' + code);
+
+      // ── Image events ────────────────────────────────────────────
+      state.channel.bind('class-started', data => {
+        if (state.role !== 'student') return;
+        state.classStarted = true;
+        state.imgIndex = data.imageIndex || 0;
+        renderStudentView();
+        showScreen('student-class');
+      });
+
+      state.channel.bind('image-changed', data => {
+        state.imgIndex = data.imageIndex;
+        if (state.role === 'student') renderStudentView();
+        else if (state.role === 'mentor') renderMentorImage();
+      });
+
+      state.channel.bind('class-state', data => {
+        if (state.role !== 'student' || state.classStarted) return;
+        state.classStarted = true;
+        state.imgIndex = data.imageIndex;
+        renderStudentView();
+        showScreen('student-class');
+      });
+
+      state.channel.bind('class-ended', () => {
+        if (state.role === 'student') { toast('The class has ended.'); goHome(); }
+      });
+
+      // ── MCQ events ───────────────────────────────────────────────
+      state.channel.bind('mcq-started', data => {
+        if (state.role !== 'student') return;
+        state.mcqActive = true;
+        state.mcqQuestions = data.questions;
+        state.mcqQIndex = 0;
+        updateHeader();
+        showScreen('student-mcq');
+        document.getElementById('mcq-waiting-notice').style.display = 'block';
+        document.getElementById('mcq-student-content').style.display = 'none';
+      });
+
+      state.channel.bind('mcq-question', data => {
+        if (state.role !== 'student') return;
+        state.mcqQIndex = data.qIndex;
+        state.mcqSubmitted = false;
+        state.mcqStudentAnswer = null;
+        renderStudentQuestion(data.qIndex);
+      });
+
+      state.channel.bind('mcq-answer', data => {
+        // Only the mentor processes incoming answers
+        if (state.role !== 'mentor') return;
+        const q = state.mcqQuestions[state.mcqQIndex];
+        const isCorrect = data.optionIndex === q.correct;
+        state.mcqAnswers[data.studentName] = {
+          optionIndex: data.optionIndex,
+          correct: isCorrect,
+          timestamp: Date.now(),
+        };
+        renderMentorResponses();
+      });
+
+      state.channel.bind('mcq-reveal', data => {
+        if (state.role !== 'student') return;
+        // Record this answer in personal history before revealing
+        state.mcqStudentHistory.push({
+          optionIndex: state.mcqStudentAnswer, // null if not answered
+          correct: state.mcqStudentAnswer === data.correctIndex,
+          correctIndex: data.correctIndex,
+        });
+        revealAnswerStudent(data.correctIndex);
+      });
+
+      state.channel.bind('mcq-ended', () => {
+        if (state.role === 'student') {
+          toast('The MCQ session has ended.');
+          goHome();
+        }
+      });
+
+      state.channel.bind('mcq-results', data => {
+        // Students receive the full results payload when mentor finishes
+        if (state.role !== 'student') return;
+        renderStudentResults(data);
+        showScreen('student-results');
+      });
+    }
+
+    async function trigger(event, data) {
+      try {
+        const res = await fetch('/api/trigger', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ channel: 'room-' + state.roomCode, event, data }),
+        });
+        if (!res.ok) throw new Error((await res.json()).error || 'Error');
+        return true;
+      } catch (e) {
+        console.error('Trigger failed:', e);
+        toast('Connection error. Please try again.');
+        return false;
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // HOME / ROLE SELECTION
+    // ═══════════════════════════════════════════════════════════════
+
+    function selectRole(role) {
+      if (!requirePusher() && role !== 'admin') return;
+      state.role = role;
+      updateHeader();
+      if (role === 'admin') adminCreate();
+      else if (role === 'mentor') showScreen('mentor-login');
+      else if (role === 'student') showScreen('student-login');
+    }
+
+    function goHome() {
+      if (state.heartbeat) { clearInterval(state.heartbeat); state.heartbeat = null; }
+      if (state.pusher) { state.pusher.disconnect(); state.pusher = null; state.channel = null; }
+
+      Object.assign(state, {
+        role: null, roomCode: null, imgIndex: 0, classStarted: false,
+        studentName: '', mcqStudentHistory: [],
+        mcqActive: false, mcqQuestions: [], mcqQIndex: 0,
+        mcqAnswers: {}, mcqRevealed: false, mcqHistory: [],
+        mcqSubmitted: false, mcqStudentAnswer: null,
+      });
+
+      ['mentor-code-input', 'student-code-input', 'student-name-input'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.value = '';
+      });
+      ['mentor-error', 'student-error', 'student-name-error'].forEach(hideErr);
+
+      // Reset mentor class screen
+      document.getElementById('btn-start').style.display = '';
+      document.getElementById('btn-start').disabled = false;
+      document.getElementById('btn-start').textContent = 'Start Class';
+      document.getElementById('btn-end').style.display = 'none';
+      document.getElementById('mentor-status-badge').className = 'status-badge status-waiting';
+      document.getElementById('mentor-status-badge').innerHTML = '<span class="status-dot dot-orange"></span> Waiting';
+      document.getElementById('mentor-status-label').textContent = 'Start the class when participants are ready';
+      document.getElementById('mentor-controls').style.display = 'none';
+      document.getElementById('mentor-overlay').style.display = 'none';
+      document.getElementById('mentor-img').style.display = 'none';
+      document.getElementById('mentor-placeholder').style.display = 'flex';
+
+      updateHeader();
+      showScreen('role');
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // ADMIN
+    // ═══════════════════════════════════════════════════════════════
+
+    function adminCreate() {
+      state.roomCode = rand6();
+      document.getElementById('admin-code').textContent = state.roomCode;
+      updateHeader();
+      showScreen('admin');
+    }
+
+    function copyCode() {
+      navigator.clipboard.writeText(state.roomCode)
+        .then(() => toast('Code copied to clipboard'))
+        .catch(() => toast('Code: ' + state.roomCode));
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MENTOR — IMAGE SESSION
+    // ═══════════════════════════════════════════════════════════════
+
+    function mentorJoin() {
+      const code = document.getElementById('mentor-code-input').value.trim();
+      if (!isValidCode(code)) { showErr('mentor-error', 'Please enter a valid 6-digit room code.'); return; }
+      hideErr('mentor-error');
+      state.roomCode = code;
+      state.imgIndex = 0;
+      updateHeader();
+      connectRoom(code);
+      buildDots();
+      showScreen('mentor-class');
+    }
+
+    function buildDots() {
+      const wrap = document.getElementById('mentor-dots');
+      wrap.innerHTML = '';
+      IMAGES.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'dot' + (i === state.imgIndex ? ' active' : '');
+        d.id = 'dot-' + i;
+        d.onclick = () => { if (state.classStarted) jumpTo(i); };
+        wrap.appendChild(d);
+      });
+    }
+
+    function syncDots() {
+      IMAGES.forEach((_, i) => {
+        const d = document.getElementById('dot-' + i);
+        if (d) d.className = 'dot' + (i === state.imgIndex ? ' active' : '');
+      });
+    }
+
+    async function startClass() {
+      const btn = document.getElementById('btn-start');
+      btn.disabled = true; btn.textContent = 'Starting…';
+      state.imgIndex = 0;
+      const ok = await trigger('class-started', { imageIndex: 0 });
+      if (ok) {
+        state.classStarted = true;
+        renderMentorImage();
+        btn.style.display = 'none';
+        document.getElementById('btn-end').style.display = '';
+        document.getElementById('mentor-status-badge').className = 'status-badge status-live';
+        document.getElementById('mentor-status-badge').innerHTML = '<span class="status-dot dot-green"></span> Live';
+        document.getElementById('mentor-status-label').textContent = 'Class is live. Use the controls below to navigate.';
+        document.getElementById('mentor-controls').style.display = 'flex';
+        document.getElementById('mentor-overlay').style.display = 'flex';
+
+        state.heartbeat = setInterval(() => {
+          if (state.classStarted && !state.mcqActive) trigger('class-state', { imageIndex: state.imgIndex });
+        }, 10000);
+
+        IMAGES.forEach((src, i) => { if (i > 0) { const img = new Image(); img.src = src; } });
+      } else {
+        btn.disabled = false; btn.textContent = 'Start Class';
+      }
+    }
+
+    async function endClass() {
+      if (!confirm('Are you sure you want to end the class? All students will be disconnected.')) return;
+      clearInterval(state.heartbeat); state.heartbeat = null;
+      await trigger('class-ended', {});
+      toast('Class ended.');
       goHome();
     }
-  });
-}
 
-async function trigger(event, data) {
-  try {
-    const res = await fetch('/api/trigger', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ channel: 'room-' + state.roomCode, event, data }),
-    });
-    if (!res.ok) throw new Error((await res.json()).error || 'Error');
-    return true;
-  } catch (e) {
-    console.error('Trigger failed:', e);
-    toast('Connection error. Please try again.');
-    return false;
-  }
-}
+    function renderMentorImage() {
+      const img = document.getElementById('mentor-img');
+      img.src = IMAGES[state.imgIndex];
+      img.style.display = 'block';
+      document.getElementById('mentor-placeholder').style.display = 'none';
+      document.getElementById('mentor-counter').textContent = `Image ${state.imgIndex + 1} of ${IMAGES.length}`;
 
-// ═══════════════════════════════════════════════════════════════
-// HOME / ROLE SELECTION
-// ═══════════════════════════════════════════════════════════════
+      // Wire up Prev button
+      const prevBtn = document.getElementById('btn-prev');
+      prevBtn.disabled = state.imgIndex === 0;
+      prevBtn.onclick = () => changeImage(-1);
 
-function selectRole(role) {
-  if (!requirePusher() && role !== 'admin') return;
-  state.role = role;
-  updateHeader();
-  if      (role === 'admin')   adminCreate();
-  else if (role === 'mentor')  showScreen('mentor-login');
-  else if (role === 'student') showScreen('student-login');
-}
-
-function goHome() {
-  if (state.heartbeat) { clearInterval(state.heartbeat); state.heartbeat = null; }
-  if (state.pusher)    { state.pusher.disconnect(); state.pusher = null; state.channel = null; }
-
-  Object.assign(state, {
-    role: null, roomCode: null, imgIndex: 0, classStarted: false,
-    studentName: '', mcqActive: false, mcqQuestions: [], mcqQIndex: 0,
-    mcqAnswers: {}, mcqRevealed: false, mcqHistory: [],
-    mcqSubmitted: false, mcqStudentAnswer: null,
-  });
-
-  ['mentor-code-input','student-code-input','student-name-input'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value = '';
-  });
-  ['mentor-error','student-error','student-name-error'].forEach(hideErr);
-
-  // Reset mentor class screen
-  document.getElementById('btn-start').style.display   = '';
-  document.getElementById('btn-start').disabled        = false;
-  document.getElementById('btn-start').textContent     = 'Start Class';
-  document.getElementById('btn-end').style.display     = 'none';
-  document.getElementById('mentor-status-badge').className = 'status-badge status-waiting';
-  document.getElementById('mentor-status-badge').innerHTML = '<span class="status-dot dot-orange"></span> Waiting';
-  document.getElementById('mentor-status-label').textContent = 'Start the class when participants are ready';
-  document.getElementById('mentor-controls').style.display   = 'none';
-  document.getElementById('mentor-overlay').style.display    = 'none';
-  document.getElementById('mentor-img').style.display        = 'none';
-  document.getElementById('mentor-placeholder').style.display= 'flex';
-
-  updateHeader();
-  showScreen('role');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// ADMIN
-// ═══════════════════════════════════════════════════════════════
-
-function adminCreate() {
-  state.roomCode = rand6();
-  document.getElementById('admin-code').textContent = state.roomCode;
-  updateHeader();
-  showScreen('admin');
-}
-
-function copyCode() {
-  navigator.clipboard.writeText(state.roomCode)
-    .then(() => toast('Code copied to clipboard'))
-    .catch(() => toast('Code: ' + state.roomCode));
-}
-
-// ═══════════════════════════════════════════════════════════════
-// MENTOR — IMAGE SESSION
-// ═══════════════════════════════════════════════════════════════
-
-function mentorJoin() {
-  const code = document.getElementById('mentor-code-input').value.trim();
-  if (!isValidCode(code)) { showErr('mentor-error', 'Please enter a valid 6-digit room code.'); return; }
-  hideErr('mentor-error');
-  state.roomCode = code;
-  state.imgIndex = 0;
-  updateHeader();
-  connectRoom(code);
-  buildDots();
-  showScreen('mentor-class');
-}
-
-function buildDots() {
-  const wrap = document.getElementById('mentor-dots');
-  wrap.innerHTML = '';
-  IMAGES.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'dot' + (i === state.imgIndex ? ' active' : '');
-    d.id = 'dot-' + i;
-    d.onclick = () => { if (state.classStarted) jumpTo(i); };
-    wrap.appendChild(d);
-  });
-}
-
-function syncDots() {
-  IMAGES.forEach((_, i) => {
-    const d = document.getElementById('dot-' + i);
-    if (d) d.className = 'dot' + (i === state.imgIndex ? ' active' : '');
-  });
-}
-
-async function startClass() {
-  const btn = document.getElementById('btn-start');
-  btn.disabled = true; btn.textContent = 'Starting…';
-  state.imgIndex = 0;
-  const ok = await trigger('class-started', { imageIndex: 0 });
-  if (ok) {
-    state.classStarted = true;
-    renderMentorImage();
-    btn.style.display = 'none';
-    document.getElementById('btn-end').style.display   = '';
-    document.getElementById('mentor-status-badge').className = 'status-badge status-live';
-    document.getElementById('mentor-status-badge').innerHTML = '<span class="status-dot dot-green"></span> Live';
-    document.getElementById('mentor-status-label').textContent = 'Class is live. Use the controls below to navigate.';
-    document.getElementById('mentor-controls').style.display = 'flex';
-    document.getElementById('mentor-overlay').style.display  = 'flex';
-
-    state.heartbeat = setInterval(() => {
-      if (state.classStarted && !state.mcqActive) trigger('class-state', { imageIndex: state.imgIndex });
-    }, 10000);
-
-    IMAGES.forEach((src, i) => { if (i > 0) { const img = new Image(); img.src = src; } });
-  } else {
-    btn.disabled = false; btn.textContent = 'Start Class';
-  }
-}
-
-async function endClass() {
-  if (!confirm('Are you sure you want to end the class? All students will be disconnected.')) return;
-  clearInterval(state.heartbeat); state.heartbeat = null;
-  await trigger('class-ended', {});
-  toast('Class ended.');
-  goHome();
-}
-
-function renderMentorImage() {
-  const img = document.getElementById('mentor-img');
-  img.src = IMAGES[state.imgIndex];
-  img.style.display = 'block';
-  document.getElementById('mentor-placeholder').style.display = 'none';
-  document.getElementById('mentor-counter').textContent = `Image ${state.imgIndex + 1} of ${IMAGES.length}`;
-
-  // Wire up Prev button
-  const prevBtn = document.getElementById('btn-prev');
-  prevBtn.disabled = state.imgIndex === 0;
-  prevBtn.onclick = () => changeImage(-1);
-
-  // Wire up Next button — becomes "Start MCQ" on the last image
-  const isLast = state.imgIndex === IMAGES.length - 1;
-  const nextBtn = document.getElementById('btn-next');
-  nextBtn.disabled = false;
-  if (isLast) {
-    nextBtn.textContent = 'Start MCQ';
-    nextBtn.className   = 'nav-btn nav-mcq';
-    nextBtn.onclick     = startMcq;
-  } else {
-    nextBtn.textContent = 'Next';
-    nextBtn.className   = 'nav-btn';
-    nextBtn.onclick     = () => changeImage(1);
-  }
-  syncDots();
-}
-
-async function changeImage(dir) {
-  const next = state.imgIndex + dir;
-  if (next < 0 || next >= IMAGES.length) return;
-  await jumpTo(next);
-}
-
-async function jumpTo(index) {
-  if (index === state.imgIndex && state.classStarted) return;
-  state.imgIndex = index;
-  renderMentorImage();
-  await trigger('image-changed', { imageIndex: index });
-}
-
-// ═══════════════════════════════════════════════════════════════
-// MENTOR — MCQ SESSION
-// ═══════════════════════════════════════════════════════════════
-
-async function startMcq() {
-  if (!confirm('Start the MCQ test? This will transition all students from the image view to the MCQ screen.')) return;
-
-  state.mcqQuestions = pickRandom(QUESTION_BANK, 3);
-  state.mcqQIndex    = 0;
-  state.mcqHistory   = [];
-  state.mcqActive    = true;
-  updateHeader();
-
-  const ok = await trigger('mcq-started', { questions: state.mcqQuestions });
-  if (!ok) { state.mcqActive = false; updateHeader(); return; }
-
-  // Show first question immediately
-  showScreen('mentor-mcq');
-  renderMentorQuestion(0);
-  await trigger('mcq-question', { qIndex: 0 });
-}
-
-function renderMentorQuestion(qIdx) {
-  const q = state.mcqQuestions[qIdx];
-  state.mcqAnswers  = {};
-  state.mcqRevealed = false;
-
-  document.getElementById('mcq-mentor-title').textContent   = 'MCQ Session';
-  document.getElementById('mcq-mentor-subtitle').textContent = `Question ${qIdx + 1} of ${state.mcqQuestions.length}`;
-  document.getElementById('mcq-step-badge').textContent      = `Question ${qIdx + 1} / ${state.mcqQuestions.length}`;
-  document.getElementById('mcq-topic-badge').textContent     = q.topic;
-  document.getElementById('mcq-mentor-q-text').textContent   = q.text;
-
-  // Options
-  const optsEl = document.getElementById('mcq-mentor-opts');
-  optsEl.innerHTML = '';
-  q.options.forEach((opt, i) => {
-    const row = document.createElement('div');
-    row.className = 'mcq-opt-mentor';
-    row.id = 'mopt-' + i;
-    row.innerHTML = `<span class="opt-letter">${LETTERS[i]}</span><span class="mcq-opt-text">${opt}</span>`;
-    optsEl.appendChild(row);
-  });
-
-  // Buttons
-  document.getElementById('btn-reveal').style.display = '';
-  document.getElementById('btn-reveal').disabled      = false;
-  document.getElementById('btn-reveal').textContent   = 'Show Correct Answer';
-
-  const isLast = qIdx === state.mcqQuestions.length - 1;
-  document.getElementById('btn-mcq-next').style.display   = 'none';
-  document.getElementById('btn-mcq-finish').style.display = 'none';
-
-  // Reset response panel
-  renderMentorResponses();
-}
-
-function renderMentorResponses() {
-  const q       = state.mcqQuestions[state.mcqQIndex];
-  const entries = Object.entries(state.mcqAnswers);
-  const answered= entries.length;
-  const correct = entries.filter(([,v]) => v.correct).length;
-  const wrong   = answered - correct;
-
-  // Active = students who sent any answer (we track unique names)
-  document.getElementById('stat-active').textContent  = answered;
-  document.getElementById('stat-correct').textContent = correct;
-  document.getElementById('stat-wrong').textContent   = wrong;
-
-  // Progress bar
-  document.getElementById('resp-prog-label').textContent = `${answered} responded`;
-  const pct = answered > 0 ? Math.min(100, answered * 10) : 0; // rough indicator
-  document.getElementById('resp-prog-fill').style.width = pct + '%';
-
-  const list = document.getElementById('resp-list');
-  if (entries.length === 0) {
-    list.innerHTML = '<div class="resp-empty">No students have answered yet</div>';
-    return;
-  }
-
-  list.innerHTML = '';
-  // Sort by timestamp
-  entries.sort((a,b) => a[1].timestamp - b[1].timestamp).forEach(([name, ans]) => {
-    const row = document.createElement('div');
-    row.className = 'resp-row answered';
-
-    const optLetter = LETTERS[ans.optionIndex] || '?';
-    const optText   = q.options[ans.optionIndex] || '';
-
-    let badgeHtml = '';
-    if (state.mcqRevealed) {
-      badgeHtml = ans.correct
-        ? '<span class="resp-badge resp-badge-correct">Correct</span>'
-        : '<span class="resp-badge resp-badge-wrong">Incorrect</span>';
-    } else {
-      badgeHtml = `<span class="resp-badge resp-badge-active">Answered</span>`;
+      // Wire up Next button — becomes "Start MCQ" on the last image
+      const isLast = state.imgIndex === IMAGES.length - 1;
+      const nextBtn = document.getElementById('btn-next');
+      nextBtn.disabled = false;
+      if (isLast) {
+        nextBtn.textContent = 'Start MCQ';
+        nextBtn.className = 'nav-btn nav-mcq';
+        nextBtn.onclick = startMcq;
+      } else {
+        nextBtn.textContent = 'Next';
+        nextBtn.className = 'nav-btn';
+        nextBtn.onclick = () => changeImage(1);
+      }
+      syncDots();
     }
 
-    row.innerHTML = `
+    async function changeImage(dir) {
+      const next = state.imgIndex + dir;
+      if (next < 0 || next >= IMAGES.length) return;
+      await jumpTo(next);
+    }
+
+    async function jumpTo(index) {
+      if (index === state.imgIndex && state.classStarted) return;
+      state.imgIndex = index;
+      renderMentorImage();
+      await trigger('image-changed', { imageIndex: index });
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MENTOR — MCQ SESSION
+    // ═══════════════════════════════════════════════════════════════
+
+    async function startMcq() {
+      if (!confirm('Start the MCQ test? This will transition all students from the image view to the MCQ screen.')) return;
+
+      state.mcqQuestions = pickRandom(QUESTION_BANK, 3);
+      state.mcqQIndex = 0;
+      state.mcqHistory = [];
+      state.mcqActive = true;
+      updateHeader();
+
+      const ok = await trigger('mcq-started', { questions: state.mcqQuestions });
+      if (!ok) { state.mcqActive = false; updateHeader(); return; }
+
+      // Show first question immediately
+      showScreen('mentor-mcq');
+      renderMentorQuestion(0);
+      await trigger('mcq-question', { qIndex: 0 });
+    }
+
+    function renderMentorQuestion(qIdx) {
+      const q = state.mcqQuestions[qIdx];
+      state.mcqAnswers = {};
+      state.mcqRevealed = false;
+
+      document.getElementById('mcq-mentor-title').textContent = 'MCQ Session';
+      document.getElementById('mcq-mentor-subtitle').textContent = `Question ${qIdx + 1} of ${state.mcqQuestions.length}`;
+      document.getElementById('mcq-step-badge').textContent = `Question ${qIdx + 1} / ${state.mcqQuestions.length}`;
+      document.getElementById('mcq-topic-badge').textContent = q.topic;
+      document.getElementById('mcq-mentor-q-text').textContent = q.text;
+
+      // Options
+      const optsEl = document.getElementById('mcq-mentor-opts');
+      optsEl.innerHTML = '';
+      q.options.forEach((opt, i) => {
+        const row = document.createElement('div');
+        row.className = 'mcq-opt-mentor';
+        row.id = 'mopt-' + i;
+        row.innerHTML = `<span class="opt-letter">${LETTERS[i]}</span><span class="mcq-opt-text">${opt}</span>`;
+        optsEl.appendChild(row);
+      });
+
+      // Buttons
+      document.getElementById('btn-reveal').style.display = '';
+      document.getElementById('btn-reveal').disabled = false;
+      document.getElementById('btn-reveal').textContent = 'Show Correct Answer';
+
+      const isLast = qIdx === state.mcqQuestions.length - 1;
+      document.getElementById('btn-mcq-next').style.display = 'none';
+      document.getElementById('btn-mcq-finish').style.display = 'none';
+
+      // Reset response panel
+      renderMentorResponses();
+    }
+
+    function renderMentorResponses() {
+      const q = state.mcqQuestions[state.mcqQIndex];
+      const entries = Object.entries(state.mcqAnswers);
+      const answered = entries.length;
+      const correct = entries.filter(([, v]) => v.correct).length;
+      const wrong = answered - correct;
+
+      // Active = students who sent any answer (we track unique names)
+      document.getElementById('stat-active').textContent = answered;
+      document.getElementById('stat-correct').textContent = correct;
+      document.getElementById('stat-wrong').textContent = wrong;
+
+      // Progress bar
+      document.getElementById('resp-prog-label').textContent = `${answered} responded`;
+      const pct = answered > 0 ? Math.min(100, answered * 10) : 0; // rough indicator
+      document.getElementById('resp-prog-fill').style.width = pct + '%';
+
+      const list = document.getElementById('resp-list');
+      if (entries.length === 0) {
+        list.innerHTML = '<div class="resp-empty">No students have answered yet</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      // Sort by timestamp
+      entries.sort((a, b) => a[1].timestamp - b[1].timestamp).forEach(([name, ans]) => {
+        const row = document.createElement('div');
+        row.className = 'resp-row answered';
+
+        const optLetter = LETTERS[ans.optionIndex] || '?';
+        const optText = q.options[ans.optionIndex] || '';
+
+        let badgeHtml = '';
+        if (state.mcqRevealed) {
+          badgeHtml = ans.correct
+            ? '<span class="resp-badge resp-badge-correct">Correct</span>'
+            : '<span class="resp-badge resp-badge-wrong">Incorrect</span>';
+        } else {
+          badgeHtml = `<span class="resp-badge resp-badge-active">Answered</span>`;
+        }
+
+        row.innerHTML = `
       <span class="resp-name">${escHtml(name)}</span>
       <span class="resp-answer">${optLetter} &mdash; ${escHtml(optText)}</span>
       ${badgeHtml}
     `;
-    list.appendChild(row);
-  });
-}
+        list.appendChild(row);
+      });
+    }
 
-function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+    function escHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
 
-async function revealAnswer() {
-  const q = state.mcqQuestions[state.mcqQIndex];
-  state.mcqRevealed = true;
+    async function revealAnswer() {
+      const q = state.mcqQuestions[state.mcqQIndex];
+      state.mcqRevealed = true;
 
-  // Highlight correct option in mentor view
-  q.options.forEach((_, i) => {
-    const el = document.getElementById('mopt-' + i);
-    if (!el) return;
-    el.className = 'mcq-opt-mentor ' + (i === q.correct ? 'correct-ans' : 'wrong-ans');
-  });
+      // Highlight correct option in mentor view
+      q.options.forEach((_, i) => {
+        const el = document.getElementById('mopt-' + i);
+        if (!el) return;
+        el.className = 'mcq-opt-mentor ' + (i === q.correct ? 'correct-ans' : 'wrong-ans');
+      });
 
-  document.getElementById('btn-reveal').disabled    = true;
-  document.getElementById('btn-reveal').textContent = 'Answer Revealed';
+      document.getElementById('btn-reveal').disabled = true;
+      document.getElementById('btn-reveal').textContent = 'Answer Revealed';
 
-  const isLast = state.mcqQIndex === state.mcqQuestions.length - 1;
-  document.getElementById(isLast ? 'btn-mcq-finish' : 'btn-mcq-next').style.display = '';
+      const isLast = state.mcqQIndex === state.mcqQuestions.length - 1;
+      document.getElementById(isLast ? 'btn-mcq-finish' : 'btn-mcq-next').style.display = '';
 
-  // Update response badges
-  renderMentorResponses();
+      // Update response badges
+      renderMentorResponses();
 
-  // Broadcast reveal to students
-  await trigger('mcq-reveal', { correctIndex: q.correct });
-}
+      // Broadcast reveal to students
+      await trigger('mcq-reveal', { correctIndex: q.correct });
+    }
 
-async function nextMcqQuestion() {
-  // Save results for this question
-  saveMcqQuestionHistory();
+    async function nextMcqQuestion() {
+      // Save results for this question
+      saveMcqQuestionHistory();
 
-  state.mcqQIndex++;
-  state.mcqAnswers  = {};
-  state.mcqRevealed = false;
+      state.mcqQIndex++;
+      state.mcqAnswers = {};
+      state.mcqRevealed = false;
 
-  renderMentorQuestion(state.mcqQIndex);
-  await trigger('mcq-question', { qIndex: state.mcqQIndex });
-}
+      renderMentorQuestion(state.mcqQIndex);
+      await trigger('mcq-question', { qIndex: state.mcqQIndex });
+    }
 
-async function finishMcq() {
-  saveMcqQuestionHistory();
-  renderMcqSummary();
-  showScreen('mentor-mcq-summary');
-}
+    async function finishMcq() {
+      saveMcqQuestionHistory();
 
-function saveMcqQuestionHistory() {
-  const q       = state.mcqQuestions[state.mcqQIndex];
-  const entries = Object.entries(state.mcqAnswers);
-  state.mcqHistory.push({
-    question: q.text,
-    topic:    q.topic,
-    responded: entries.length,
-    correct:   entries.filter(([,v]) => v.correct).length,
-  });
-}
+      // Build a results payload for students:
+      // Send the full questions (with correct answers) + per-question class stats
+      const resultsPayload = {
+        questions: state.mcqQuestions,          // full question objects incl. correct index
+        history: state.mcqHistory,            // [{ question, topic, responded, correct }]
+      };
+      await trigger('mcq-results', resultsPayload);
 
-function renderMcqSummary() {
-  const totalResponded = state.mcqHistory.reduce((s,h) => s + h.responded, 0);
-  const totalCorrect   = state.mcqHistory.reduce((s,h) => s + h.correct, 0);
+      renderMcqSummary();
+      showScreen('mentor-mcq-summary');
+    }
 
-  document.getElementById('mcq-summary-stats').innerHTML = `
+    function saveMcqQuestionHistory() {
+      const q = state.mcqQuestions[state.mcqQIndex];
+      const entries = Object.entries(state.mcqAnswers);
+      state.mcqHistory.push({
+        question: q.text,
+        topic: q.topic,
+        responded: entries.length,
+        correct: entries.filter(([, v]) => v.correct).length,
+      });
+    }
+
+    function renderMcqSummary() {
+      const totalResponded = state.mcqHistory.reduce((s, h) => s + h.responded, 0);
+      const totalCorrect = state.mcqHistory.reduce((s, h) => s + h.correct, 0);
+
+      document.getElementById('mcq-summary-stats').innerHTML = `
     <div class="summary-stat">
       <div class="summary-stat-num" style="color:var(--blue)">${state.mcqQuestions.length}</div>
       <div class="summary-stat-lbl">Questions</div>
@@ -1477,12 +2462,12 @@ function renderMcqSummary() {
     </div>
   `;
 
-  const tbody = document.getElementById('mcq-summary-tbody');
-  tbody.innerHTML = '';
-  state.mcqHistory.forEach((h, i) => {
-    const pct = h.responded > 0 ? Math.round(h.correct / h.responded * 100) : 0;
-    const tr  = document.createElement('tr');
-    tr.innerHTML = `
+      const tbody = document.getElementById('mcq-summary-tbody');
+      tbody.innerHTML = '';
+      state.mcqHistory.forEach((h, i) => {
+        const pct = h.responded > 0 ? Math.round(h.correct / h.responded * 100) : 0;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
       <td style="max-width:300px;">${escHtml(h.question)}</td>
       <td><span class="mcq-topic-badge">${escHtml(h.topic)}</span></td>
       <td>${h.responded}</td>
@@ -1491,139 +2476,228 @@ function renderMcqSummary() {
         <span style="font-weight:600;color:${pct >= 70 ? 'var(--green)' : pct >= 40 ? '#f9ab00' : 'var(--red)'}">${pct}%</span>
       </td>
     `;
-    tbody.appendChild(tr);
-  });
-}
-
-async function endMcq() {
-  if (!confirm('End the MCQ session? This will close the MCQ for all students.')) return;
-  await trigger('mcq-ended', {});
-  toast('MCQ session ended.');
-  goHome();
-}
-
-// ═══════════════════════════════════════════════════════════════
-// STUDENT — LOGIN & JOIN
-// ═══════════════════════════════════════════════════════════════
-
-function studentNameStep() {
-  const code = document.getElementById('student-code-input').value.trim();
-  if (!isValidCode(code)) { showErr('student-error', 'Please enter a valid 6-digit room code.'); return; }
-  hideErr('student-error');
-  state.roomCode = code;
-  showScreen('student-name');
-}
-
-function studentJoin() {
-  const name = document.getElementById('student-name-input').value.trim();
-  if (!name) { showErr('student-name-error', 'Please enter your name.'); return; }
-  hideErr('student-name-error');
-
-  state.studentName = name;
-  updateHeader();
-  document.getElementById('student-room-code').textContent = state.roomCode;
-  connectRoom(state.roomCode);
-  showScreen('student-waiting');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// STUDENT — IMAGE SESSION
-// ═══════════════════════════════════════════════════════════════
-
-function renderStudentView() {
-  document.getElementById('student-img').src = IMAGES[state.imgIndex];
-  document.getElementById('student-counter').textContent = `Image ${state.imgIndex + 1} of ${IMAGES.length}`;
-}
-
-// ═══════════════════════════════════════════════════════════════
-// STUDENT — MCQ SESSION
-// ═══════════════════════════════════════════════════════════════
-
-function renderStudentQuestion(qIdx) {
-  const q = state.mcqQuestions[qIdx];
-  const total = state.mcqQuestions.length;
-
-  document.getElementById('mcq-student-step').textContent = `Question ${qIdx + 1} / ${total}`;
-  document.getElementById('mcq-waiting-notice').style.display  = 'none';
-  document.getElementById('mcq-student-content').style.display = 'block';
-  document.getElementById('mcq-student-q-text').textContent    = q.text;
-  document.getElementById('mcq-student-feedback').style.display = 'none';
-  document.getElementById('mcq-student-feedback').innerHTML = '';
-
-  const optsEl = document.getElementById('mcq-student-opts');
-  optsEl.innerHTML = '';
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'mcq-opt-student';
-    btn.id = 'sopt-' + i;
-    btn.innerHTML = `<span class="opt-letter-student">${LETTERS[i]}</span><span>${escHtml(opt)}</span>`;
-    btn.onclick = () => studentSelectAnswer(i);
-    optsEl.appendChild(btn);
-  });
-}
-
-async function studentSelectAnswer(optIdx) {
-  if (state.mcqSubmitted) return;
-
-  // Visually select
-  document.querySelectorAll('.mcq-opt-student').forEach(b => b.classList.remove('selected'));
-  const sel = document.getElementById('sopt-' + optIdx);
-  if (sel) sel.classList.add('selected');
-  state.mcqStudentAnswer = optIdx;
-
-  // Disable all options and mark as submitted
-  state.mcqSubmitted = true;
-  document.querySelectorAll('.mcq-opt-student').forEach(b => {
-    b.disabled = true;
-    b.classList.add('answered');
-  });
-
-  // Show submitted notice
-  const fb = document.getElementById('mcq-student-feedback');
-  fb.style.display = 'block';
-  fb.innerHTML = '<div class="mcq-submitted-notice">Your answer has been submitted. Wait for the Mentor to reveal the correct answer.</div>';
-
-  // Broadcast to room (mentor receives it)
-  await trigger('mcq-answer', {
-    studentName: state.studentName,
-    optionIndex: optIdx,
-  });
-}
-
-function revealAnswerStudent(correctIndex) {
-  const q   = state.mcqQuestions[state.mcqQIndex];
-  const myAns = state.mcqStudentAnswer;
-
-  document.querySelectorAll('.mcq-opt-student').forEach((btn, i) => {
-    btn.disabled = true;
-    btn.classList.add('answered');
-    if (i === correctIndex) {
-      btn.classList.add('correct-reveal');
-    } else if (i === myAns && i !== correctIndex) {
-      btn.classList.add('my-wrong');
-    } else {
-      btn.classList.add('wrong-reveal');
+        tbody.appendChild(tr);
+      });
     }
-  });
 
-  const fb = document.getElementById('mcq-student-feedback');
-  fb.style.display = 'block';
+    async function endMcq() {
+      if (!confirm('End the MCQ session? This will close the MCQ for all students.')) return;
+      await trigger('mcq-ended', {});
+      toast('MCQ session ended.');
+      goHome();
+    }
 
-  if (myAns === null) {
-    // Did not answer
-    fb.innerHTML = '<div class="mcq-revealed-notice">The correct answer has been revealed above.</div>';
-  } else if (myAns === correctIndex) {
-    fb.innerHTML = '<div class="mcq-submitted-notice" style="background:#d4edda;border-color:#c3e6cb;color:#155724;">Your answer was correct.</div>';
-  } else {
-    fb.innerHTML = `<div class="mcq-submitted-notice" style="background:var(--red-light);border-color:#f5c6c2;color:var(--red);">Your answer was incorrect. The correct answer is <strong>${LETTERS[correctIndex]}</strong>.</div>`;
-  }
-}
+    // ═══════════════════════════════════════════════════════════════
+    // STUDENT — LOGIN & JOIN
+    // ═══════════════════════════════════════════════════════════════
 
-// ═══════════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════════
+    function studentNameStep() {
+      const code = document.getElementById('student-code-input').value.trim();
+      if (!isValidCode(code)) { showErr('student-error', 'Please enter a valid 6-digit room code.'); return; }
+      hideErr('student-error');
+      state.roomCode = code;
+      showScreen('student-name');
+    }
 
-loadConfig();
-</script>
+    function studentJoin() {
+      const name = document.getElementById('student-name-input').value.trim();
+      if (!name) { showErr('student-name-error', 'Please enter your name.'); return; }
+      hideErr('student-name-error');
+
+      state.studentName = name;
+      updateHeader();
+      document.getElementById('student-room-code').textContent = state.roomCode;
+      connectRoom(state.roomCode);
+      showScreen('student-waiting');
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // STUDENT — IMAGE SESSION
+    // ═══════════════════════════════════════════════════════════════
+
+    function renderStudentView() {
+      document.getElementById('student-img').src = IMAGES[state.imgIndex];
+      document.getElementById('student-counter').textContent = `Image ${state.imgIndex + 1} of ${IMAGES.length}`;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // STUDENT — MCQ SESSION
+    // ═══════════════════════════════════════════════════════════════
+
+    function renderStudentQuestion(qIdx) {
+      const q = state.mcqQuestions[qIdx];
+      const total = state.mcqQuestions.length;
+
+      document.getElementById('mcq-student-step').textContent = `Question ${qIdx + 1} / ${total}`;
+      document.getElementById('mcq-waiting-notice').style.display = 'none';
+      document.getElementById('mcq-student-content').style.display = 'block';
+      document.getElementById('mcq-student-q-text').textContent = q.text;
+      document.getElementById('mcq-student-feedback').style.display = 'none';
+      document.getElementById('mcq-student-feedback').innerHTML = '';
+
+      const optsEl = document.getElementById('mcq-student-opts');
+      optsEl.innerHTML = '';
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'mcq-opt-student';
+        btn.id = 'sopt-' + i;
+        btn.innerHTML = `<span class="opt-letter-student">${LETTERS[i]}</span><span>${escHtml(opt)}</span>`;
+        btn.onclick = () => studentSelectAnswer(i);
+        optsEl.appendChild(btn);
+      });
+    }
+
+    async function studentSelectAnswer(optIdx) {
+      if (state.mcqSubmitted) return;
+
+      // Visually select
+      document.querySelectorAll('.mcq-opt-student').forEach(b => b.classList.remove('selected'));
+      const sel = document.getElementById('sopt-' + optIdx);
+      if (sel) sel.classList.add('selected');
+      state.mcqStudentAnswer = optIdx;
+
+      // Disable all options and mark as submitted
+      state.mcqSubmitted = true;
+      document.querySelectorAll('.mcq-opt-student').forEach(b => {
+        b.disabled = true;
+        b.classList.add('answered');
+      });
+
+      // Show submitted notice
+      const fb = document.getElementById('mcq-student-feedback');
+      fb.style.display = 'block';
+      fb.innerHTML = '<div class="mcq-submitted-notice">Your answer has been submitted. Wait for the Mentor to reveal the correct answer.</div>';
+
+      // Broadcast to room (mentor receives it)
+      await trigger('mcq-answer', {
+        studentName: state.studentName,
+        optionIndex: optIdx,
+      });
+    }
+
+    function revealAnswerStudent(correctIndex) {
+      const q = state.mcqQuestions[state.mcqQIndex];
+      const myAns = state.mcqStudentAnswer;
+
+      document.querySelectorAll('.mcq-opt-student').forEach((btn, i) => {
+        btn.disabled = true;
+        btn.classList.add('answered');
+        if (i === correctIndex) {
+          btn.classList.add('correct-reveal');
+        } else if (i === myAns && i !== correctIndex) {
+          btn.classList.add('my-wrong');
+        } else {
+          btn.classList.add('wrong-reveal');
+        }
+      });
+
+      const fb = document.getElementById('mcq-student-feedback');
+      fb.style.display = 'block';
+
+      if (myAns === null) {
+        // Did not answer
+        fb.innerHTML = '<div class="mcq-revealed-notice">The correct answer has been revealed above.</div>';
+      } else if (myAns === correctIndex) {
+        fb.innerHTML = '<div class="mcq-submitted-notice" style="background:#d4edda;border-color:#c3e6cb;color:#155724;">Your answer was correct.</div>';
+      } else {
+        fb.innerHTML = `<div class="mcq-submitted-notice" style="background:var(--red-light);border-color:#f5c6c2;color:var(--red);">Your answer was incorrect. The correct answer is <strong>${LETTERS[correctIndex]}</strong>.</div>`;
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════════════════
+
+    // ═══════════════════════════════════════════════════════════════
+    // STUDENT — RESULTS SCREEN
+    // ═══════════════════════════════════════════════════════════════
+
+    function renderStudentResults(data) {
+      const { questions, history } = data;
+      const studentHistory = state.mcqStudentHistory; // per-question {optionIndex, correct, correctIndex}
+      const total = questions.length;
+      const correct = studentHistory.filter(h => h.correct).length;
+      const pct = total > 0 ? Math.round(correct / total * 100) : 0;
+
+      // ── Score banner ─────────────────────────────────────────────
+      const circleClass = pct >= 70 ? 'score-circle-great' : pct >= 40 ? 'score-circle-ok' : 'score-circle-low';
+      const headline = pct >= 70 ? 'Great work!' : pct >= 40 ? 'Good effort!' : 'Keep practising!';
+      const subline = `You answered ${correct} out of ${total} questions correctly.`;
+
+      document.getElementById('student-score-card').innerHTML = `
+    <div class="student-score-banner">
+      <div class="student-score-circle ${circleClass}">
+        ${correct}<small>/ ${total}</small>
+      </div>
+      <div class="student-score-info">
+        <h3>${headline}</h3>
+        <p>${subline}</p>
+        <p style="margin-top:6px;">
+          Your score: <strong style="font-size:17px;">${pct}%</strong>
+          &nbsp;&mdash;&nbsp;
+          Class average: <strong>${history.reduce((s, h) => s + (h.responded > 0 ? Math.round(h.correct / h.responded * 100) : 0), 0) / Math.max(history.length, 1) | 0}%</strong>
+        </p>
+      </div>
+    </div>
+  `;
+
+      // ── Per-question breakdown ───────────────────────────────────
+      const wrap = document.getElementById('student-results-breakdown');
+      wrap.innerHTML = '';
+
+      questions.forEach((q, qi) => {
+        const ans = studentHistory[qi];           // may be undefined for late joiners
+        const myIdx = ans ? ans.optionIndex : null; // null = not answered
+        const correctIdx = q.correct;
+        const isCorrect = myIdx === correctIdx;
+        const isSkipped = myIdx === null;
+
+        const cardClass = isSkipped ? 'rq-skipped' : isCorrect ? 'rq-correct' : 'rq-wrong';
+        const badge = isSkipped
+          ? `<span class="resp-badge resp-badge-pending">Not answered</span>`
+          : isCorrect
+            ? `<span class="resp-badge resp-badge-correct">Correct</span>`
+            : `<span class="resp-badge resp-badge-wrong">Incorrect</span>`;
+
+        // class accuracy from mentor history
+        const h = history[qi];
+        const cPct = h && h.responded > 0 ? Math.round(h.correct / h.responded * 100) : null;
+        const classNote = cPct !== null
+          ? `<span style="font-size:12px;color:var(--gray-500);">${cPct}% of class correct</span>`
+          : '';
+
+        const optsHtml = q.options.map((opt, oi) => {
+          let cls = 'rq-opt';
+          if (oi === correctIdx) cls += ' rq-opt-correct';
+          else if (oi === myIdx) cls += ' rq-opt-my-wrong';
+          else cls += ' rq-opt-other';
+          return `
+        <div class="${cls}">
+          <span class="rq-letter">${LETTERS[oi]}</span>
+          <span>${escHtml(opt)}</span>
+          ${oi === myIdx && oi !== correctIdx ? '<span style="font-size:12px;color:var(--red);margin-left:auto;">Your answer</span>' : ''}
+          ${oi === correctIdx ? '<span style="font-size:12px;color:var(--green);margin-left:auto;">Correct answer</span>' : ''}
+        </div>`;
+        }).join('');
+
+        const card = document.createElement('div');
+        card.className = `rq-card ${cardClass}`;
+        card.innerHTML = `
+      <div class="rq-header">
+        <span class="rq-question">Q${qi + 1}. ${escHtml(q.text)}</span>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
+          ${badge}
+          ${classNote}
+        </div>
+      </div>
+      <div class="rq-opts">${optsHtml}</div>
+    `;
+        wrap.appendChild(card);
+      });
+    }
+
+    loadConfig();
+  </script>
 </body>
+
 </html>

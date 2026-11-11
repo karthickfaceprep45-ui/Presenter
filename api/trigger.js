@@ -29,6 +29,7 @@ const ALLOWED_EVENTS = new Set([
   'mcq-answer',        // student submits an answer (broadcast to mentor)
   'mcq-reveal',        // mentor reveals the correct answer
   'mcq-ended',         // mentor ends the MCQ session
+  'mcq-results',       // mentor broadcasts final results to students
 ]);
 
 module.exports = async function handler(req, res) {

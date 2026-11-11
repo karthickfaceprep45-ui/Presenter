@@ -621,9 +621,9 @@
       </div>
 
       <div class="controls" id="mentor-controls" style="display:none">
-        <button class="nav-btn" id="btn-prev" onclick="changeImage(-1)" disabled>Previous</button>
+        <button class="nav-btn" id="btn-prev" disabled>Previous</button>
         <div class="dots" id="mentor-dots"></div>
-        <button class="nav-btn" id="btn-next" onclick="changeImage(1)">Next</button>
+        <button class="nav-btn" id="btn-next">Next</button>
       </div>
     </div>
   </div>
@@ -1259,19 +1259,24 @@ function renderMentorImage() {
   img.style.display = 'block';
   document.getElementById('mentor-placeholder').style.display = 'none';
   document.getElementById('mentor-counter').textContent = `Image ${state.imgIndex + 1} of ${IMAGES.length}`;
-  document.getElementById('btn-prev').disabled = state.imgIndex === 0;
 
+  // Wire up Prev button
+  const prevBtn = document.getElementById('btn-prev');
+  prevBtn.disabled = state.imgIndex === 0;
+  prevBtn.onclick = () => changeImage(-1);
+
+  // Wire up Next button — becomes "Start MCQ" on the last image
   const isLast = state.imgIndex === IMAGES.length - 1;
   const nextBtn = document.getElementById('btn-next');
   nextBtn.disabled = false;
   if (isLast) {
     nextBtn.textContent = 'Start MCQ';
-    nextBtn.className = 'nav-btn nav-mcq';
-    nextBtn.onclick = startMcq;
+    nextBtn.className   = 'nav-btn nav-mcq';
+    nextBtn.onclick     = startMcq;
   } else {
     nextBtn.textContent = 'Next';
-    nextBtn.className = 'nav-btn';
-    nextBtn.onclick = () => changeImage(1);
+    nextBtn.className   = 'nav-btn';
+    nextBtn.onclick     = () => changeImage(1);
   }
   syncDots();
 }

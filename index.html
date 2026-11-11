@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Presenter</title>
+  <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:        #1a73e8;
+      --blue-dark:   #1558d6;
+      --blue-light:  #e8f0fe;
+      --green:       #34a853;
+      --red:         #d93025;
+      --red-light:   #fce8e6;
+      --yellow-bg:   #fef9e7;
+      --yellow-text: #856404;
+      --gray-50:     #f8f9fa;
+      --gray-100:    #f1f3f4;
+      --gray-200:    #e8eaed;
+      --gray-300:    #dadce0;
+      --gray-400:    #bdc1c6;
+      --gray-500:    #9aa0a6;
+      --gray-700:    #5f6368;
+      --gray-900:    #202124;
+      --white:       #ffffff;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+      --shadow:      0 4px 6px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.1);
+      --radius:      8px;
+      --radius-lg:   12px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ── Header ──────────────────────────────────────────────── */
+    .header {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-brand { font-size: 18px; font-weight: 700; color: var(--blue); letter-spacing: -0.3px; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+
+    .pill {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .pill-blue   { background: var(--blue-light); color: var(--blue); }
+    .pill-gray   { background: var(--gray-100);   color: var(--gray-700); }
+    .pill-green  { background: #e6f4ea;            color: var(--green); }
+
+    .btn-ghost {
+      background: none; border: none;
+      color: var(--blue); font-size: 14px; cursor: pointer;
+      padding: 6px 12px; border-radius: var(--radius);
+      transition: background 0.15s;
+    }
+    .btn-ghost:hover { background: var(--blue-light); }
+
+    /* ── Screens ─────────────────────────────────────────────── */
+    .main   { min-height: calc(100vh - 60px); display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+    .screen { display: none; width: 100%; }
+    .screen.active { display: block; }
+
+    /* ── Cards ───────────────────────────────────────────────── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 32px;
+    }
+    .card-sm { max-width: 400px; margin: 0 auto; }
+    .card-md { max-width: 540px; margin: 0 auto; }
+    .card-lg { max-width: 900px; margin: 0 auto; }
+
+    /* ── Typography ──────────────────────────────────────────── */
+    .page-title    { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+    .page-subtitle { font-size: 14px; color: var(--gray-700); margin-bottom: 28px; }
+    .text-secondary { color: var(--gray-700); }
+    .text-center    { text-align: center; }
+    .text-sm        { font-size: 13px; }
+
+    /* ── Role Selection ──────────────────────────────────────── */
+    .hero { text-align: center; margin-bottom: 40px; }
+    .hero h1 { font-size: 30px; font-weight: 700; margin-bottom: 10px; }
+    .hero p  { font-size: 15px; color: var(--gray-700); }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .role-card {
+      background: var(--white);
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+      user-select: none;
+    }
+    .role-card:hover  { border-color: var(--blue); box-shadow: var(--shadow); transform: translateY(-2px); }
+    .role-card:active { transform: translateY(0); }
+
+    .role-icon {
+      width: 52px; height: 52px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px;
+    }
+    .icon-admin   { background: #fce8e6; }
+    .icon-mentor  { background: #e6f4ea; }
+    .icon-student { background: var(--blue-light); }
+
+    .role-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .role-card p  { font-size: 13px; color: var(--gray-700); }
+
+    /* ── Buttons ─────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 10px 20px; border-radius: var(--radius);
+      font-size: 14px; font-weight: 500; cursor: pointer;
+      transition: background 0.15s, box-shadow 0.15s; border: none; line-height: 1;
+    }
+    .btn-primary   { background: var(--blue);     color: var(--white); }
+    .btn-primary:hover   { background: var(--blue-dark); box-shadow: var(--shadow-sm); }
+    .btn-secondary { background: var(--gray-100); color: var(--gray-900); border: 1px solid var(--gray-300); }
+    .btn-secondary:hover { background: var(--gray-200); }
+    .btn-danger    { background: var(--red-light); color: var(--red); }
+    .btn-danger:hover    { background: #f5c6c2; }
+    .btn-success   { background: #e6f4ea; color: var(--green); }
+    .btn-success:hover   { background: #ceead6; }
+    .btn-lg   { padding: 12px 24px; font-size: 15px; }
+    .btn-full { width: 100%; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── Forms ───────────────────────────────────────────────── */
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--gray-700); margin-bottom: 6px; }
+    .form-input {
+      width: 100%; padding: 10px 14px;
+      border: 1.5px solid var(--gray-300); border-radius: var(--radius);
+      font-size: 15px; color: var(--gray-900); outline: none;
+      transition: border-color 0.15s; background: var(--white);
+    }
+    .form-input:focus { border-color: var(--blue); }
+    .code-input { font-size: 32px; font-weight: 700; letter-spacing: 10px; text-align: center; }
+    .form-error { font-size: 13px; color: var(--red); margin-top: 6px; }
+
+    /* ── Room Code Display (Admin) ───────────────────────────── */
+    .code-display {
+      background: var(--gray-50); border: 2px dashed var(--gray-300);
+      border-radius: var(--radius-lg); padding: 28px; text-align: center; margin: 24px 0;
+    }
+    .code-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gray-500); margin-bottom: 10px; }
+    .code-value { font-size: 48px; font-weight: 800; letter-spacing: 14px; color: var(--blue); font-variant-numeric: tabular-nums; }
+
+    /* ── Steps list ──────────────────────────────────────────── */
+    .steps { list-style: none; }
+    .steps li { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--gray-100); font-size: 14px; color: var(--gray-700); }
+    .steps li:last-child { border-bottom: none; }
+    .step-num {
+      width: 22px; height: 22px; background: var(--blue-light); color: var(--blue);
+      border-radius: 50%; font-size: 12px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* ── Image viewer ────────────────────────────────────────── */
+    .image-wrap {
+      position: relative; border-radius: var(--radius-lg);
+      overflow: hidden; background: var(--gray-100); aspect-ratio: 16 / 9;
+    }
+    .class-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .img-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 14px 18px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.55));
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .img-counter { color: var(--white); font-size: 13px; font-weight: 500; }
+
+    .img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--gray-500); gap: 10px;
+    }
+    .img-placeholder p { font-size: 14px; }
+
+    /* ── Controls ────────────────────────────────────────────── */
+    .controls { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; }
+    .nav-btn {
+      padding: 9px 20px; background: var(--white);
+      border: 1.5px solid var(--gray-300); border-radius: var(--radius);
+      font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--gray-900);
+    }
+    .nav-btn:hover:not(:disabled) { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+    .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .dots { display: flex; gap: 8px; align-items: center; }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--gray-300); cursor: pointer; transition: background 0.2s, transform 0.2s;
+    }
+    .dot.active { background: var(--blue); transform: scale(1.3); }
+
+    /* ── Mentor top bar ──────────────────────────────────────── */
+    .class-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 12px; }
+    .class-topbar-left h2 { font-size: 18px; font-weight: 600; margin-bottom: 2px; }
+    .class-topbar-right { display: flex; align-items: center; gap: 10px; }
+
+    /* ── Status badge ────────────────────────────────────────── */
+    .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; }
+    .status-waiting { background: #fff3cd; color: #856404; }
+    .status-live    { background: #d4edda; color: #155724; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .dot-orange { background: #f9ab00; }
+    .dot-green  { background: var(--green); }
+
+    /* ── Waiting screen ──────────────────────────────────────── */
+    .waiting-wrap { text-align: center; padding: 48px 24px; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--gray-200); border-top-color: var(--blue);
+      border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 24px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .waiting-wrap h2 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+
+    /* ── Notice ──────────────────────────────────────────────── */
+    .notice {
+      padding: 11px 14px; border-radius: var(--radius);
+      font-size: 13px; margin-bottom: 18px;
+      background: var(--blue-light); color: var(--blue-dark); border: 1px solid #c5d9f7;
+    }
+
+    /* ── Toast ───────────────────────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--gray-900); color: var(--white);
+      padding: 11px 20px; border-radius: var(--radius);
+      font-size: 14px; font-weight: 500; z-index: 999;
+      opacity: 0; transition: opacity 0.25s; pointer-events: none; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; }
+
+    /* ── Divider & spacing ───────────────────────────────────── */
+    hr { border: none; border-top: 1px solid var(--gray-200); margin: 24px 0; }
+    .mt-3 { margin-top: 12px; }
+    .mt-4 { margin-top: 16px; }
+    .mt-5 { margin-top: 20px; }
+    .mt-6 { margin-top: 24px; }
+    .mb-1 { margin-bottom: 4px; }
+
+    /* ── Config error overlay ────────────────────────────────── */
+    .config-error {
+      position: fixed; inset: 0; background: rgba(255,255,255,0.95);
+      display: flex; align-items: center; justify-content: center; z-index: 500;
+    }
+    .config-error-box {
+      max-width: 480px; padding: 36px; border-radius: var(--radius-lg);
+      background: var(--white); border: 1px solid var(--gray-200); box-shadow: var(--shadow); text-align: center;
+    }
+    .config-error-box h2 { margin-bottom: 12px; }
+    .config-error-box p  { font-size: 14px; color: var(--gray-700); line-height: 1.6; }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .role-grid { grid-template-columns: 1fr; }
+      .code-value { font-size: 36px; letter-spacing: 8px; }
+      .header { padding: 0 16px; }
+      .main { padding: 24px 16px; }
+      .card { padding: 24px 18px; }
+      .class-topbar { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header class="header">
+  <span class="header-brand">Presenter</span>
+  <div class="header-right" id="header-right"></div>
+</header>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<main class="main">
+
+  <!-- ── SCREEN: Role Selection ── -->
+  <div id="screen-role" class="screen active">
+    <div class="hero">
+      <h1>Welcome to Presenter</h1>
+      <p>Select your role to get started</p>
+    </div>
+    <div class="role-grid">
+
+      <div class="role-card" onclick="selectRole('admin')">
+        <div class="role-icon icon-admin">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            <polyline points="16 11 17.5 12.5 21 9" stroke-width="2"/>
+          </svg>
+        </div>
+        <h3>Admin</h3>
+        <p>Create a room and generate a class code for participants</p>
+      </div>
+
+      <div class="role-card" onclick="selectRole('mentor')">
+        <div class="role-icon icon-mentor">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#34a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </div>
+        <h3>Mentor</h3>
+        <p>Lead the session and control what students see in real time</p>
+      </div>
+
+      <div class="role-card" onclick="selectRole('student')">
+        <div class="role-icon icon-student">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <h3>Student</h3>
+        <p>Join a room using the 6-digit code provided by your admin</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── SCREEN: Admin ── -->
+  <div id="screen-admin" class="screen">
+    <div class="card card-md">
+      <div class="page-title">Room Created</div>
+      <div class="page-subtitle">Share the code below with your Mentor and Students</div>
+
+      <div class="code-display">
+        <div class="code-label">Room Code</div>
+        <div class="code-value" id="admin-code">------</div>
+      </div>
+
+      <button class="btn btn-secondary btn-full" onclick="copyCode()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2"/>
+          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+        </svg>
+        Copy Code
+      </button>
+
+      <hr />
+      <p class="text-sm text-secondary mb-1" style="text-transform:uppercase;letter-spacing:1px;font-weight:500;">Instructions</p>
+      <ul class="steps mt-3">
+        <li><span class="step-num">1</span><span>Share this code with the Mentor so they can start the class</span></li>
+        <li><span class="step-num">2</span><span>Share this same code with Students so they can join the room</span></li>
+        <li><span class="step-num">3</span><span>The Mentor will begin the session once everyone is ready</span></li>
+      </ul>
+
+      <hr />
+      <button class="btn btn-secondary" onclick="goHome()">Back to Home</button>
+    </div>
+  </div>
+
+  <!-- ── SCREEN: Mentor Login ── -->
+  <div id="screen-mentor-login" class="screen">
+    <div class="card card-sm">
+      <div class="page-title">Mentor Login</div>
+      <div class="page-subtitle">Enter the room code to access your controls</div>
+
+      <div class="form-group">
+        <label class="form-label">Room Code</label>
+        <input type="text" id="mentor-code-input" class="form-input code-input"
+          maxlength="6" placeholder="000000"
+          oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+          onkeydown="if(event.key==='Enter')mentorJoin()" />
+        <div class="form-error" id="mentor-error" style="display:none"></div>
+      </div>
+
+      <button class="btn btn-primary btn-full btn-lg" onclick="mentorJoin()">Enter Room</button>
+      <div class="mt-4"><button class="btn btn-secondary" onclick="goHome()">Back</button></div>
+    </div>
+  </div>
+
+  <!-- ── SCREEN: Mentor Class ── -->
+  <div id="screen-mentor-class" class="screen">
+    <div class="card card-lg">
+
+      <div class="class-topbar">
+        <div class="class-topbar-left">
+          <h2>Presentation View</h2>
+          <p class="text-sm text-secondary" id="mentor-status-label">Start the class when participants are ready</p>
+        </div>
+        <div class="class-topbar-right">
+          <span class="status-badge status-waiting" id="mentor-status-badge">
+            <span class="status-dot dot-orange"></span> Waiting
+          </span>
+          <button class="btn btn-success" id="btn-start" onclick="startClass()">Start Class</button>
+          <button class="btn btn-danger" id="btn-end" onclick="endClass()" style="display:none">End Class</button>
+        </div>
+      </div>
+
+      <div class="image-wrap">
+        <div class="img-placeholder" id="mentor-placeholder">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+          </svg>
+          <p>Start the class to display the first image</p>
+        </div>
+        <img src="" alt="Presentation slide" class="class-img" id="mentor-img" style="display:none" />
+        <div class="img-overlay" id="mentor-overlay" style="display:none">
+          <span class="img-counter" id="mentor-counter">Image 1 of 3</span>
+        </div>
+      </div>
+
+      <div class="controls" id="mentor-controls" style="display:none">
+        <button class="nav-btn" id="btn-prev" onclick="changeImage(-1)" disabled>Previous</button>
+        <div class="dots" id="mentor-dots"></div>
+        <button class="nav-btn" id="btn-next" onclick="changeImage(1)">Next</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── SCREEN: Student Login ── -->
+  <div id="screen-student-login" class="screen">
+    <div class="card card-sm">
+      <div class="page-title">Join a Room</div>
+      <div class="page-subtitle">Enter the 6-digit code provided by your Admin</div>
+
+      <div class="form-group">
+        <label class="form-label">Room Code</label>
+        <input type="text" id="student-code-input" class="form-input code-input"
+          maxlength="6" placeholder="000000"
+          oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+          onkeydown="if(event.key==='Enter')studentJoin()" />
+        <div class="form-error" id="student-error" style="display:none"></div>
+      </div>
+
+      <button class="btn btn-primary btn-full btn-lg" onclick="studentJoin()">Join Room</button>
+      <div class="mt-4"><button class="btn btn-secondary" onclick="goHome()">Back</button></div>
+    </div>
+  </div>
+
+  <!-- ── SCREEN: Student Waiting ── -->
+  <div id="screen-student-waiting" class="screen">
+    <div class="card card-sm">
+      <div class="waiting-wrap">
+        <div class="spinner"></div>
+        <h2>Waiting for class to start</h2>
+        <p class="text-secondary text-sm mt-3">
+          You have joined room <strong id="student-room-code">------</strong>.<br />
+          The Mentor will begin the session shortly.
+        </p>
+        <div class="mt-6">
+          <button class="btn btn-secondary" onclick="goHome()">Leave Room</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCREEN: Student Class ── -->
+  <div id="screen-student-class" class="screen">
+    <div class="card card-lg">
+
+      <div class="class-topbar">
+        <div class="class-topbar-left">
+          <h2>Live Session</h2>
+          <p class="text-sm text-secondary">The Mentor controls the presentation. Your view updates automatically.</p>
+        </div>
+        <span class="status-badge status-live">
+          <span class="status-dot dot-green"></span> Live
+        </span>
+      </div>
+
+      <div class="image-wrap">
+        <img src="" alt="Presentation slide" class="class-img" id="student-img" />
+        <div class="img-overlay">
+          <span class="img-counter" id="student-counter">Image 1 of 3</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Config error (shown if Pusher is not set up) -->
+<div class="config-error" id="config-error" style="display:none">
+  <div class="config-error-box">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:16px;">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <h2>Configuration Required</h2>
+    <p class="mt-3">
+      Pusher credentials are not configured.<br />
+      Please follow the setup instructions in <strong>README.md</strong> to add your environment variables and redeploy.
+    </p>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONFIGURATION
+// ═══════════════════════════════════════════════════════════════
+
+const IMAGES = [
+  'https://images.unsplash.com/photo-1517842645767-c639042777db?w=1200&q=80&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&q=80&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=80&auto=format&fit=crop',
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+
+const state = {
+  role:         null,
+  roomCode:     null,
+  imgIndex:     0,
+  classStarted: false,
+  pusherKey:    '',
+  pusherCluster:'',
+  pusher:       null,
+  channel:      null,
+  heartbeat:    null,
+};
+
+// ═══════════════════════════════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════════════════════════════
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+function updateHeader() {
+  const right = document.getElementById('header-right');
+  let html = '';
+  if (state.roomCode) html += `<span class="pill pill-blue">Room ${state.roomCode}</span>`;
+  if (state.role) {
+    const labels = { admin: 'Admin', mentor: 'Mentor', student: 'Student' };
+    html += `<span class="pill pill-gray">${labels[state.role]}</span>`;
+    html += `<button class="btn-ghost" onclick="goHome()">Leave</button>`;
+  }
+  right.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════════
+
+function rand6() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function hideErr(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+function isValidCode(code) {
+  return /^\d{6}$/.test(code);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PUSHER SETUP
+// ═══════════════════════════════════════════════════════════════
+
+async function loadConfig() {
+  try {
+    const res  = await fetch('/api/config');
+    const cfg  = await res.json();
+    state.pusherKey     = cfg.pusherKey     || '';
+    state.pusherCluster = cfg.pusherCluster || 'ap2';
+  } catch (e) {
+    console.error('Failed to load config:', e);
+  }
+}
+
+function requirePusher() {
+  if (!state.pusherKey) {
+    document.getElementById('config-error').style.display = 'flex';
+    return false;
+  }
+  return true;
+}
+
+function connectRoom(code) {
+  if (state.pusher) state.pusher.disconnect();
+
+  state.pusher  = new Pusher(state.pusherKey, { cluster: state.pusherCluster });
+  state.channel = state.pusher.subscribe('room-' + code);
+
+  // ── Mentor listening to its own broadcasts (for multi-tab sync)
+  state.channel.bind('class-started', data => {
+    if (state.role !== 'student') return;
+    state.classStarted = true;
+    state.imgIndex = data.imageIndex || 0;
+    renderStudentView();
+    showScreen('student-class');
+  });
+
+  state.channel.bind('image-changed', data => {
+    state.imgIndex = data.imageIndex;
+    if (state.role === 'student')       renderStudentView();
+    else if (state.role === 'mentor')   renderMentorImage();
+  });
+
+  // Late-joiner heartbeat (sent by Mentor every 10 s while class is live)
+  state.channel.bind('class-state', data => {
+    if (state.role !== 'student' || state.classStarted) return;
+    state.classStarted = true;
+    state.imgIndex = data.imageIndex;
+    renderStudentView();
+    showScreen('student-class');
+  });
+
+  state.channel.bind('class-ended', () => {
+    if (state.role === 'student') {
+      toast('The class has ended.');
+      goHome();
+    }
+  });
+}
+
+async function trigger(event, data) {
+  try {
+    const res = await fetch('/api/trigger', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ channel: 'room-' + state.roomCode, event, data }),
+    });
+    if (!res.ok) throw new Error((await res.json()).error || 'Error');
+    return true;
+  } catch (e) {
+    console.error('Trigger failed:', e);
+    toast('Connection error. Please try again.');
+    return false;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HOME / ROLE SELECTION
+// ═══════════════════════════════════════════════════════════════
+
+function selectRole(role) {
+  if (!requirePusher() && role !== 'admin') return;
+  state.role = role;
+  updateHeader();
+  if      (role === 'admin')   adminCreate();
+  else if (role === 'mentor')  showScreen('mentor-login');
+  else if (role === 'student') showScreen('student-login');
+}
+
+function goHome() {
+  if (state.heartbeat) { clearInterval(state.heartbeat); state.heartbeat = null; }
+  if (state.pusher)    { state.pusher.disconnect();      state.pusher = null; state.channel = null; }
+
+  Object.assign(state, { role: null, roomCode: null, imgIndex: 0, classStarted: false });
+
+  ['mentor-code-input','student-code-input'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  hideErr('mentor-error');
+  hideErr('student-error');
+
+  // Reset mentor class screen state
+  document.getElementById('btn-start').style.display   = '';
+  document.getElementById('btn-start').disabled        = false;
+  document.getElementById('btn-start').textContent     = 'Start Class';
+  document.getElementById('btn-end').style.display     = 'none';
+  document.getElementById('mentor-status-badge').className = 'status-badge status-waiting';
+  document.getElementById('mentor-status-badge').innerHTML = '<span class="status-dot dot-orange"></span> Waiting';
+  document.getElementById('mentor-status-label').textContent = 'Start the class when participants are ready';
+  document.getElementById('mentor-controls').style.display   = 'none';
+  document.getElementById('mentor-overlay').style.display    = 'none';
+  document.getElementById('mentor-img').style.display        = 'none';
+  document.getElementById('mentor-placeholder').style.display= 'flex';
+
+  updateHeader();
+  showScreen('role');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ADMIN
+// ═══════════════════════════════════════════════════════════════
+
+function adminCreate() {
+  state.roomCode = rand6();
+  document.getElementById('admin-code').textContent = state.roomCode;
+  updateHeader();
+  showScreen('admin');
+}
+
+function copyCode() {
+  navigator.clipboard.writeText(state.roomCode)
+    .then(() => toast('Code copied to clipboard'))
+    .catch(() => toast('Code: ' + state.roomCode));
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MENTOR
+// ═══════════════════════════════════════════════════════════════
+
+function mentorJoin() {
+  const code = document.getElementById('mentor-code-input').value.trim();
+  if (!isValidCode(code)) { showErr('mentor-error', 'Please enter a valid 6-digit room code.'); return; }
+  hideErr('mentor-error');
+
+  state.roomCode = code;
+  state.imgIndex = 0;
+  updateHeader();
+  connectRoom(code);
+  buildDots();
+  showScreen('mentor-class');
+}
+
+function buildDots() {
+  const wrap = document.getElementById('mentor-dots');
+  wrap.innerHTML = '';
+  IMAGES.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === state.imgIndex ? ' active' : '');
+    d.id = 'dot-' + i;
+    d.onclick = () => { if (state.classStarted) jumpTo(i); };
+    wrap.appendChild(d);
+  });
+}
+
+function syncDots() {
+  IMAGES.forEach((_, i) => {
+    const d = document.getElementById('dot-' + i);
+    if (d) d.className = 'dot' + (i === state.imgIndex ? ' active' : '');
+  });
+}
+
+async function startClass() {
+  const btn = document.getElementById('btn-start');
+  btn.disabled = true;
+  btn.textContent = 'Starting…';
+
+  state.imgIndex = 0;
+  const ok = await trigger('class-started', { imageIndex: 0 });
+
+  if (ok) {
+    state.classStarted = true;
+    renderMentorImage();
+    btn.style.display = 'none';
+    document.getElementById('btn-end').style.display = '';
+    document.getElementById('mentor-status-badge').className = 'status-badge status-live';
+    document.getElementById('mentor-status-badge').innerHTML = '<span class="status-dot dot-green"></span> Live';
+    document.getElementById('mentor-status-label').textContent = 'Class is live. Use the controls below to navigate.';
+    document.getElementById('mentor-controls').style.display = 'flex';
+    document.getElementById('mentor-overlay').style.display  = 'flex';
+
+    // Heartbeat — helps students who join after class has started
+    state.heartbeat = setInterval(() => {
+      if (state.classStarted) trigger('class-state', { imageIndex: state.imgIndex });
+    }, 10000);
+
+    // Pre-load remaining images
+    IMAGES.forEach((src, i) => { if (i > 0) { const img = new Image(); img.src = src; } });
+  } else {
+    btn.disabled = false;
+    btn.textContent = 'Start Class';
+  }
+}
+
+async function endClass() {
+  if (!confirm('Are you sure you want to end the class? All students will be disconnected.')) return;
+  clearInterval(state.heartbeat);
+  state.heartbeat = null;
+  await trigger('class-ended', {});
+  toast('Class ended.');
+  goHome();
+}
+
+function renderMentorImage() {
+  const img = document.getElementById('mentor-img');
+  img.src = IMAGES[state.imgIndex];
+  img.style.display = 'block';
+  document.getElementById('mentor-placeholder').style.display = 'none';
+  document.getElementById('mentor-counter').textContent = `Image ${state.imgIndex + 1} of ${IMAGES.length}`;
+  document.getElementById('btn-prev').disabled = state.imgIndex === 0;
+  document.getElementById('btn-next').disabled = state.imgIndex === IMAGES.length - 1;
+  syncDots();
+}
+
+async function changeImage(dir) {
+  const next = state.imgIndex + dir;
+  if (next < 0 || next >= IMAGES.length) return;
+  await jumpTo(next);
+}
+
+async function jumpTo(index) {
+  if (index === state.imgIndex && state.classStarted) return;
+  state.imgIndex = index;
+  renderMentorImage();
+  await trigger('image-changed', { imageIndex: index });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STUDENT
+// ═══════════════════════════════════════════════════════════════
+
+function studentJoin() {
+  const code = document.getElementById('student-code-input').value.trim();
+  if (!isValidCode(code)) { showErr('student-error', 'Please enter a valid 6-digit room code.'); return; }
+  hideErr('student-error');
+
+  state.roomCode = code;
+  updateHeader();
+  document.getElementById('student-room-code').textContent = code;
+  connectRoom(code);
+  showScreen('student-waiting');
+}
+
+function renderStudentView() {
+  document.getElementById('student-img').src = IMAGES[state.imgIndex];
+  document.getElementById('student-counter').textContent = `Image ${state.imgIndex + 1} of ${IMAGES.length}`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+
+loadConfig();
+</script>
+</body>
+</html>
+

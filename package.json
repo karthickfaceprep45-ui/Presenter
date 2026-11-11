@@ -1,0 +1,10 @@
+{
+  "name": "presenter",
+  "version": "1.0.0",
+  "description": "Real-time classroom presenter app",
+  "license": "MIT",
+  "dependencies": {
+    "pusher": "^5.2.0"
+  }
+}
+
